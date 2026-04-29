@@ -136,8 +136,7 @@
 % Hifenizacao e caracteres especiais portugues-brasil por padrao
 % ---
 \RequirePackage[brazil]{babel}
-%
-% Nomes constantes do abnTeX2 em portugues (definicoes padroes)
+
 \newcommand{\folhaderostoname}{Folha de rosto}
 \newcommand{\epigraphname}{Ep\'igrafe}
 \newcommand{\dedicatorianame}{Dedicat\'oria}
@@ -155,22 +154,19 @@
 \newcommand{\listadesimbolosname}{Lista de s\'imbolos}
 \newcommand{\fontename}{Fonte}
 \newcommand{\notaname}{Nota}
-%
-\addto\captionsbrazil{% portugues-brasil
-  %% ajusta nomes padroes do babel
+
+\addto\captionsbrazil{
   \renewcommand{\bibname}{Refer\^encias}
   \renewcommand{\indexname}{\'Indice}
   \renewcommand{\listfigurename}{Lista de ilustra\c{c}\~{o}es}
   \renewcommand{\listtablename}{Lista de tabelas}
-  %% ajusta nomes usados com a macro \autoref
   \renewcommand{\pageautorefname}{p\'agina}
   \renewcommand{\sectionautorefname}{se{\c c}\~ao}
   \renewcommand{\subsectionautorefname}{subse{\c c}\~ao}
   \renewcommand{\subsubsectionautorefname}{subse{\c c}\~ao}
   \renewcommand{\paragraphautorefname}{subse{\c c}\~ao}
 }
-\addto\captionsenglish{% ingles
-  %% adjusts names from abnTeX2
+\addto\captionsenglish{
   \renewcommand{\folhaderostoname}{Title page}
   \renewcommand{\epigraphname}{Epigraph}
   \renewcommand{\dedicatorianame}{Dedication}
@@ -188,7 +184,6 @@
   \renewcommand{\listadesimbolosname}{List of symbols}
   \renewcommand{\fontename}{Source}
   \renewcommand{\notaname}{Note}
-   %% adjusts names used by \autoref
   \renewcommand{\pageautorefname}{page}
   \renewcommand{\sectionautorefname}{section}
   \renewcommand{\subsectionautorefname}{subsection}
@@ -844,29 +839,23 @@
    \begin{onecolabstract}
 }{\end{onecolabstract}\PRIVATEclearpageifneeded}
 
-% ---
-% Lista de abreviaturas e siglas
-\newenvironment{siglas}{%
+% lista de abreviaturas e siglas
+\newenvironment{siglas}{
   \pretextualchapter{\listadesiglasname}
   \begin{symbols}
-}{%
+}{
   \end{symbols}
   \cleardoublepage
 }
-% ---
 
-% ---
-% Lista de simbolos
-\newenvironment{simbolos}{%
+% lista de simbolos
+\newenvironment{simbolos}{
   \pretextualchapter{\listadesimbolosname}
   \begin{symbols}
-}{%
+}{
   \end{symbols}
   \cleardoublepage
 }
-% ---
-
-
 
 % ------------------------------------------------------------------------
 % ------------------------------------------------------------------------

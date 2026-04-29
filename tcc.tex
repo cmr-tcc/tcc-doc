@@ -107,7 +107,7 @@ abnt-repeated-author-omit = no] {abntex2cite}
 \renewcommand{\rmdefault}{phv} % Arial
 \renewcommand{\sfdefault}{phv} % Arial
 
-% formatacao de codigo fonte
+% formatação de código fonte
 \renewcommand{\lstlistingname}{Código}
 \renewcommand{\lstlistlistingname}{Lista de códigos}
 
@@ -221,47 +221,39 @@ abnt-repeated-author-omit = no] {abntex2cite}
 	%	\end{otherlanguage*}
 	%\end{resumo}
 	
+	% lista de figuras
 	\renewcommand{\listfigurename}{Lista de figuras}
 	\pdfbookmark[0]{\listfigurename}{lof}
 	\listoffigures*
 	\cleardoublepage
 
-	% inserir lista de quadros
-	% ---
+	% lista de quadros
 	\pdfbookmark[0]{\listofquadrosname}{loq}
 	\listofquadros*
 	\cleardoublepage
-	% inserir lista de tabelas
-	% ---
+
+	% lista de tabelas
 	\pdfbookmark[0]{\listtablename}{lot}
 	\listoftables*
 	\cleardoublepage
-	% inserir lista de abreviaturas e siglas
-	% ---
-	%\pdfbookmark[0]{\lstlistlistingname}{lot}
+
+	% lista de siglas
 	\lstlistoflistings*
 	\cleardoublepage
-	% inserir lista de abreviaturas e siglas
 	\begin{siglas}
-		\input{siglas}
+	\input{content/siglas}
 	\end{siglas}
-	% ---
-	
-	% ---
-	% inserir lista de símbolos
-	% ---
+
+	% lista de símbolos
 	\begin{simbolos}
-		\input{simbolos}
+	\input{content/simbolos}
 	\end{simbolos}
-	% ---
 	
-	% ---
-	% inserir o sumario
-	% ---
+	% sumário
 	\pdfbookmark[0]{\contentsname}{toc}
 	\tableofcontents*
 	\cleardoublepage
-	% ----------------------------------------------------------
+
 	\textual
 	
 	\include{introducao}
