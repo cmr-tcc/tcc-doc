@@ -1,2 +1,45 @@
-# tcc-uepg-latex
-Este repositório contém os arquivos necessários para auxiliar os acadêmicos com a formatação de Trabalhos de Conclusão de Curso para a Universidade Estadual de Ponta Grossa, com o uso do sistema de compilação de textos LaTex e sistema de referências Bibtex. 
+# Instalação
+
+1. Instale o LaTeX no seu computador com `apt install texlive-full`
+
+# Compilação
+
+Gere o arquivo PDF com `pdflatex tcc.tex`
+
+Limpe os arquivos temporários com `latexmk -c`
+
+# Extensões
+
+`.tex`: o conteúdo de fato
+
+`.bib`: base de dados da bibliografia
+
+`.cls`: layout do documento
+
+`.sty`: pacotes
+
+`.bst`: estilização
+
+`.aux`: durante a compilação
+
+`.bbl`: gera a bibliografia
+
+`.blg`: log
+
+`.toc`: sumário
+
+`.lot`: lista de figuras
+
+`.lol`: lista de blocos
+
+`.lot`: lista de tabelas
+
+`.loq`: lista de quadros
+
+`.idx`: indexação
+
+`.log`: log de compilação
+
+`.gz`: compressão de arquivo
+
+`.rev`: revisão

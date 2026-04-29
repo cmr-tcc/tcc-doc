@@ -721,7 +721,7 @@
 
 % Comandos de dados - local
 \providecommand{\imprimirlocal}{}
-\newcommand{\local}[1]{\renewcommand{\imprimirlocal}{#1}}
+\newcommand{\local}[1]{\renewcommand{\imprimirlocal}{\MakeUppercase{#1}}}
 
 % Comandos de dados - preambulo
 \providecommand{\imprimirpreambulo}{}
@@ -733,13 +733,6 @@
 \newcommand{\orientador}[2][\orientadorname]%
   {\renewcommand{\imprimirorientadorRotulo}{#1}%
    \renewcommand{\imprimirorientador}{#2}}
-
-% Comandos de dados - coorientador
-\providecommand{\imprimircoorientadorRotulo}{}
-\providecommand{\imprimircoorientador}{}
-\newcommand{\coorientador}[2][\coorientadorname]%
-  {\renewcommand{\imprimircoorientadorRotulo}{#1}%
-   \renewcommand{\imprimircoorientador}{#2}}
 
 % Comandos de dados - tipo de trabalho
 \providecommand{\imprimirtipotrabalho}{}
@@ -1097,9 +1090,7 @@
     {\abntex@ifnotempty{\imprimirinstituicao}{\imprimirinstituicao\vspace*{\fill}}}
 
     {\large\imprimirorientadorRotulo~\imprimirorientador\par}
-    \abntex@ifnotempty{\imprimircoorientador}{%
-       {\large\imprimircoorientadorRotulo~\imprimircoorientador}%
-    }%
+
     \vspace*{\fill}
 
     {\large\imprimirlocal}

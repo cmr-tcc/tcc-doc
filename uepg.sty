@@ -55,9 +55,8 @@
 \setlength{\parskip}{18pt}
 % ljsenger (21/10/2021) end
 
-% alterando a capa
-\renewcommand{\imprimircapa}{%
-  \begin{capa}%
+\renewcommand{\imprimircapa}{
+  \begin{capa}
     \center
     \ABNTEXchapterfont\Large 
     
@@ -90,26 +89,24 @@
 \renewcommand{\folhaderostocontent}{
 \begin{center}
 
-    
-{\ABNTEXchapterfont\large\imprimirautor}
+\vspace*{\fill}
 
-\vspace*{\fill}\vspace*{\fill}
+{\normalfont\large\imprimirautor}
+
+\vspace*{\fill}
 
 \begin{center}
 \ABNTEXchapterfont\Large\imprimirtitulo
 \end{center}
 
-%\vspace*{\fill}
+\vspace*{1cm}
 
 \abntex@ifnotempty{\imprimirpreambulo}{%
   \hspace{.45\textwidth}
   \begin{minipage}{.5\textwidth}
   \SingleSpacing
   \imprimirpreambulo\\
-  \\\imprimirorientador\\
-  \abntex@ifnotempty{\imprimircoorientador}{%
-  	{\imprimircoorientadorRotulo~\imprimircoorientador}%
-  }
+  \\Orientador: \imprimirorientador\\
   \end{minipage}%
   \vspace*{\fill}
 }%
