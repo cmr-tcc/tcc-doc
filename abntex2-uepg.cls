@@ -837,13 +837,12 @@
    \begin{abstract}
   }{\end{abstract}\PRIVATEclearpageifneeded}
   
-\newenvironment{resumoumacoluna}[1][\resumoname]{%
+\newenvironment{resumoumacoluna}[1][\resumoname]{
    \PRIVATEbookmarkthis{#1}
    \renewcommand{\abstractnamefont}{\chaptitlefont}
    \renewcommand{\abstractname}{\ABNTEXchapterupperifneeded{#1}}
    \begin{onecolabstract}
 }{\end{onecolabstract}\PRIVATEclearpageifneeded}
-% ---
 
 % ---
 % Lista de abreviaturas e siglas

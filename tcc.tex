@@ -192,32 +192,24 @@ abnt-repeated-author-omit = no] {abntex2cite}
 	\frenchspacing 
 	
 	\imprimircapa
-	% ---
 	
-	% ---
-	% Folha de rosto
 	% (o * indica que haverá a ficha bibliográfica)
-	% ---
 	\imprimirfolhaderosto
 
-	\input{dedicatoria}
+	\input{content/dedicatoria}
 	
 	\begin{agradecimentos}
-		\input{agradecimentos}
-		
+	\input{content/agradecimentos}
 	\end{agradecimentos}
-	% ---
 	
-	% ---
-	% Epígrafe
-	% ---
-	\input{epigrafe}
-	\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do resumo
+	\input{content/epigrafe}
+
+	\setlength{\absparsep}{18pt}
 	\begin{resumo}
-		\input{resumo}
+	\input{content/resumo}
 	\end{resumo}
 	
-	% resumo em inglês
+	% resumo em inglês 🌠 remove this or fix it with a separate file
 	%\begin{resumo}[Abstract]
 	%	\begin{otherlanguage*}{english}
 	%		Este é o abstract do trabalho. Lembre-se que conforme o modelo da UEPG, o abstract não é obrigatório para trabalhos de conclusão de Curso, mas é obrigatório para dissertações de mestrado e doutorado. 
@@ -229,12 +221,11 @@ abnt-repeated-author-omit = no] {abntex2cite}
 	%	\end{otherlanguage*}
 	%\end{resumo}
 	
-	% inserir lista de ilustrações
-	% ---
 	\renewcommand{\listfigurename}{Lista de figuras}
 	\pdfbookmark[0]{\listfigurename}{lof}
 	\listoffigures*
 	\cleardoublepage
+
 	% inserir lista de quadros
 	% ---
 	\pdfbookmark[0]{\listofquadrosname}{loq}
