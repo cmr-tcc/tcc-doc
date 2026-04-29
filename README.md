@@ -4,7 +4,7 @@
 
 # Compilação
 
-Gere o arquivo PDF com `pdflatex tcc.tex`
+Gere o arquivo PDF com `latexmk -pdf tcc.tex`
 
 Limpe os arquivos temporários com `latexmk -c`
 
