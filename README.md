@@ -8,6 +8,12 @@ Gere o arquivo PDF com `latexmk -pdf tcc.tex`
 
 Limpe os arquivos temporários com `latexmk -c`
 
+# Uso
+
+Para adicionar citações, primeiramente edite o arquivo `referencias.bib` 
+
+`tcc.text` é o arquivo de entrada do PDF
+
 # Extensões
 
 `.tex`: o conteúdo de fato
@@ -20,17 +26,17 @@ Limpe os arquivos temporários com `latexmk -c`
 
 `.loq`: lista de quadros
 
-
-
-`.bib`: base de dados da bibliografia
-
-`.cls`: layout do documento
-
-`.sty`: pacotes
+`.sty`: estilização
 
 `.bst`: estilização
 
-`.aux`: durante a compilação
+`.bib`: referências
+
+`.aux`: criados durante a compilação
+
+
+
+`.cls`: layout do documento
 
 `.bbl`: gera a bibliografia
 
