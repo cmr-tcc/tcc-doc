@@ -12,6 +12,16 @@ Limpe os arquivos temporários com `latexmk -c`
 
 `.tex`: o conteúdo de fato
 
+`.lot`: lista de figuras
+
+`.lol`: lista de códigos
+
+`.lot`: lista de tabelas
+
+`.loq`: lista de quadros
+
+
+
 `.bib`: base de dados da bibliografia
 
 `.cls`: layout do documento
@@ -27,14 +37,6 @@ Limpe os arquivos temporários com `latexmk -c`
 `.blg`: log
 
 `.toc`: sumário
-
-`.lot`: lista de figuras
-
-`.lol`: lista de blocos
-
-`.lot`: lista de tabelas
-
-`.loq`: lista de quadros
 
 `.idx`: indexação
 

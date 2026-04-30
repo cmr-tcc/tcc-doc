@@ -185,7 +185,9 @@ abnt-repeated-author-omit = no] {abntex2cite}
 \renewcommand{\rmdefault}{phv} % Arial
 \renewcommand{\sfdefault}{phv} % Arial
 
+% lista de códigos
 \newlistof{lstlistoflistings}{lol}{\lstlistlistingname}
+
 \begin{document}
 	
 	\selectlanguage{brazil}
@@ -256,11 +258,11 @@ abnt-repeated-author-omit = no] {abntex2cite}
 
 	\textual
 	
-	\include{introducao}
-	\include{revisao}
-	\include{metodologia}
-	\include{resultados}
-	\include{conclusao}
+	\include{content/introducao}
+	\include{content/revisao}
+	\include{content/metodologia}
+	\include{content/resultados}
+	\include{content/conclusao}
 	
 	\postextual
 	%ljsenger - espaçamento entre o título e o primeiro parágrafo do texto
@@ -295,7 +297,7 @@ abnt-repeated-author-omit = no] {abntex2cite}
 		\begingroup%
 		\makeatletter%
 		\let\clearpage\relax% Stop LaTeX from going to a new page; and
-		\vspace*{\fill}%
+		\vspace*{\fill}
 		\vspace*{\dimexpr-50\p@-\baselineskip}% Remove the initial (default) 50pt gap (plus 1 line)
 		\chapter{Análise Estatística}
 		% inserir aqui o texto do apendice via \input{}
