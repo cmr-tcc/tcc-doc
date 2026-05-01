@@ -16,7 +16,7 @@ Para adicionar citações, primeiramente edite o arquivo `referencias.bib`
 
 Altere o conteúdo do TCC editando os arquivos da pasta `content/`
 
-Arquivos de média, como imagens, ficam na pasta `media/`'
+Arquivos de média, como imagens, ficam na pasta `media/`
 
 # Extensões
 
