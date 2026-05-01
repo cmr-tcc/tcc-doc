@@ -14,11 +14,15 @@ Para adicionar citações, primeiramente edite o arquivo `referencias.bib`
 
 `tcc.text` é o arquivo de entrada do PDF
 
+Altere o conteúdo do TCC editando os arquivos da pasta `content/`
+
+Arquivos de média, como imagens, ficam na pasta `media/`'
+
 # Extensões
 
 `.tex`: o conteúdo de fato
 
-`.lot`: lista de figuras
+`.lof`: lista de figuras
 
 `.lol`: lista de códigos
 
@@ -26,28 +30,18 @@ Para adicionar citações, primeiramente edite o arquivo `referencias.bib`
 
 `.loq`: lista de quadros
 
-`.sty`: estilização
+`.sty`, `.bst`: estilização
 
-`.bst`: estilização
+`.bib`: referências e configurações
 
-`.bib`: referências
-
-`.aux`: criados durante a compilação
-
-
+`.aux`: criado durante a compilação
 
 `.cls`: layout do documento
 
-`.bbl`: gera a bibliografia
+`.bbl`: referências compiladas
 
 `.blg`: log
 
 `.toc`: sumário
 
-`.idx`: indexação
-
 `.log`: log de compilação
-
-`.gz`: compressão de arquivo
-
-`.rev`: revisão
