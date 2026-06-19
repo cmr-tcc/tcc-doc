@@ -1,99 +1,103 @@
 \chapter{Material e Métodos}
 
-\section {Considerações Iniciais}
+A abordagem deste trabalho é quantitativa, buscando mensurar o desempenho e o consumo de recursos de diferentes algoritmos. Para isso, são adotadas as etapas de pesquisa bibliográfica, implementação prática e análise comparativa.
 
-A partir da classe com menor representatividade na base de dados, classe 4 - Algodão Americano/Salgueiro com 2.747 observações, sendo todos os dados selecionados, foram extraídas das outras seis classes de tipos de cobertura florestal 2.747 observações, selecionadas aleatoriamente com o auxilio do software R, totalizando o conjunto de teste com 19.229 observações, conforme a tabela \ref{tb:dados}.
+\section{PESQUISA BIBLIOGRÁFICA}
 
-\subsection[Teste de subseção]{ Teste de subseção}
+Foram reunidas informações sobre Rust e WebAssembly na pesquisa bibliográfica, destacando seu contexto histórico, características técnicas e aplicabilidade. 
 
-\begin{table}[htbp]
-	\caption{Observações Selecionadas}
-	\label{tb:dados}
+Em relação ao Rust, foram abordados tópicos como o sistema de propriedade (ownership) e o modelo de empréstimo de valores (borrowing). Já para o WebAssembly, destacaram-se aspectos como o gerenciamento de memória, a segurança proporcionada pela restrição de permissões e sua integração com Rust por meio da portabilidade de código utilizando ferramentas como o wasm-pack.
+
+\section{IMPLEMENTAÇÃO PRÁTICA}
+
+Na etapa de implementação, foram utilizados cinco algoritmos distintos em Rust, cada um explora diferentes características de execução, como operações de inteiros e de pontos flutuantes, manipulação de arrays, laços de repetição, manipulação de bits, geração de número pseudo aleatórios e saída de dados. Os algoritmos foram obtidos do site The Computer Language Benchmarks Game \cite{bench2026} e sofreram adaptações mínimas para serem executadas no ambiente de teste. Buscou-se utilizar o mínimo possível de bibliotecas externas, limitando-se à biblioteca Rayon para processamento paralelo e às bibliotecas nativas da linguagem, a fim de reduzir interferências externas nos resultados de desempenho.
+
+No contexto do Rust, foi desenvolvido um código de entrada responsável por receber, por meio de parâmetros posicionais, o algoritmo a ser executado e a quantidade de execuções. Esse código também realiza a coleta do tempo de início e término da execução, mantendo os algoritmos isolados do processo de metrificação.
+
+Para o WebAssembly, os algoritmos implementados em Rust foram portados utilizando a ferramenta wasm-pack. Além disso, foi criado um arquivo de entrada em HTML para carregar uma página contendo código JavaScript capaz de executar os algoritmos portados. Essa página também aceita parâmetros via URL para definir o algoritmo e a quantidade de execuções. A execução ocorre em um navegador sem interface gráfica (headless), utilizando a biblioteca Puppeteer de JavaScript.
+
+\subsection{Algoritmos}
+
+Os seguintes algoritmos foram utilizados na implementação prática:
+
+\begin{itemize}	
+    \item fannkuch-redux: foca em operações com inteiros e manipulação de arrays;
+    \item n-body: realiza operações de ponto flutuante;
+    \item spectral-norm: concentra-se em laços de repetição;
+    \item mandelbrot: faz a manipulação de bits;
+    \item fasta: avalia a capacidade de geração de números pseudo aleatórios e saída de dados.
+\end{itemize}
+
+\subsection{Configuração dos Testes}
+
+Cada algoritmo foi executado 10 vezes em sequência. Foram realizados cenários com e sem 3 execuções prévias antes da carga principal, com o objetivo de avaliar o impacto da compilação Just-In-Time (JIT) e do uso de cache para melhorar a performance. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura~\ref{fig:diagrama-execucao-testes}.
+
+\begin{figure}[H]
 	\centering
-	\setlength{\tabcolsep}{5pt}
-	\begin{tabular}{cccccc}
-		\hline
-		Tipo de Cobertura  &Total de  &Observações  &Porcentagem por \\
-		Florestal &Observações &Selecionadas &Tipo de Cobertura \\
-		\hline
-		Classe 1 &211.840 &2747 &1,29\% \\
-		Classe 2 &283.301 &2747 &0,97\% \\
-		Classe 3 &35.754  &2747 &7,68\% \\
-		Classe 4 &2.747   &2747 &100\% \\
-		Classe 5 &9.493   &2747 &28,94\% \\
-		Classe 6 &17.367  &2747 &15,82\% \\
-		Classe 7 &20.510  &2747 &13,39\% \\
-		\hline
-		\textbf{Total} &\textbf{581.012} &\textbf{19.229} &\textbf{3,31\%} \\
-		\hline
-	\end{tabular}
-\end{table}
-
-\section{Exemplo de Código Fonte}
-O código~\ref{code:oddoreven} apresenta um exemplo de uso de listagem de código.
-
-\begin{lstlisting}[caption={Exemplo de código fonte}, language=Python, label=code:oddoreven]
-	# Python program to check if the input number
-	# is odd or even.
-	# A number is even if division by 2 gives a
-	# remainder of 0.
-	# If the remainder is 1, it is an odd number.
-	
-	num = int(input("Enter a number: "))
-	if (num % 2) == 0:
-		print("{0} is Even".format(num))
-	else:
-		print("{0} is Odd".format(num))
-\end{lstlisting}	
-
-\section{Análise dos Dados}
-
-\section{Cronograma}
-
-Visando atingir os objetivos propostos apresenta-se um cronograma de atividades a ser realizado. Estas atividades e o cronograma estão ilustrados nas tabelas \ref{tb:atividades} e \ref{fig:cronograma}, respectivamente.
-
-\begin{table}[!htb]
-	\centering
-	\caption{Atividades Previstas}\label{tb:atividades}
-	\begin{tabular}{cp{12cm}}
-		\hline \hline &\\[-0.4cm]
-		Atividades& \multicolumn{1}{c}{ Descrição} \\
-		\hline
-		&\\[-0.4cm]
-		\textbf{A} & Revisão bibliográfica. \\[0.2cm]
-		\textbf{B} & Estudo de novas representações.\\[0.2cm]
-		\textbf{C} & Aplicação dos algoritmos.\\[0.2cm]
-		\textbf{D} & Desenvolvimento da interface. \\[0.2cm]
-		\textbf{E} & Validação dos resultados.\\[0.2cm]
-		\textbf{F} & Elaboração da monografia.\\[0.2cm]
-		\textbf{G} & Defesa.\\[0.2cm]
-		\hline \hline
-	\end{tabular}
-\end{table}
-
-\begin{figure} % adicione [!htb] para forçar a posição da figura
-	\caption{Cronograma de Atividades}\label{fig:cronograma}
-	\begin{gantt}{10}{12}
-		\begin{ganttitle}
-			\numtitle{1}{1}{12}{1}
-		\end{ganttitle}
-		\ganttbar{Revisão da literatura}{0}{2}
-		\ganttbarcon{refinamento método}{2}{5}
-		\ganttbarcon{}{8}{2}
-		\ganttmilestone[color=cyan]{Milestone with color!}{4}
-		\ganttbar{another task}{2}{2}
-		\ganttbar[color=cyan]{another coloured task}{4}{4}
-		\ganttbar{another task}{4}{2}
-		\ganttcon{4}{5}{4}{7}
-		\ganttmilestonecon{A connected Milestone}{7}
-		\ganttbarcon{another consecutive task}{8}{2}
-	\end{gantt}
+	\caption{Fluxo de execução dos testes e coleta de métricas dos algoritmos}\label{fig:diagrama-execucao-testes}
+	\includegraphics[scale=0.4]{media/diagrama-execucao-testes}
 \end{figure}
 
-\section{Recursos}
+\section{Ambiente de teste}
 
-Descrever os recursos necessários para o desenvolvimento da pesquisa.
+Com o objetivo de isolar o ambiente de execução, foram utilizados contêineres por meio do Docker, com quantidades controladas de CPUs e memória RAM, visando aumentar a reprodutibilidade dos experimentos.
 
-\subsection{Recursos Humanos}
+Os testes foram realizados em três computadores diferentes, sendo posteriormente calculada a média dos resultados obtidos. Além disso, foram padronizadas as versões das tecnologias utilizadas em todos os computadores. A seguir, são apresentados os hardwares e os softwares utilizados.
 
-\subsection{Recursos Físicos}
+\subsection{Hardwares}
+
+Computador 1:
+
+\begin{itemize}
+    \item Sistema operacional: Ubuntu 24.04 (Noble);
+    \item Kernel: Linux 6.17.0-35-generic;
+    \item Processador: Intel i7 1165G7, 4 núcleos / 8 threads;
+    \item Memória RAM: 16 GB LPDDR4 (8x2 GB) 4267Mhz;
+    \item Armazenamento: SSD NVMe de 1 TB Micron MTFDHBA1T0QFD.
+\end{itemize}
+
+Computador 2:
+
+\begin{itemize}
+    \item Sistema operacional: Windows 11 Home Single Language 64 bits;
+    \item Kernel: Windows NT 10.0;
+    \item Processador: Intel Core i5-10300H, 4 núcleos / 8 threads;
+    \item Memória RAM: 8 GB DDR (8x1 GB) 3200Mhz;
+    \item Armazenamento: SSD SATA de 500 GB KINGSTON SA400S37.
+\end{itemize}
+
+Computador 3:
+
+\begin{itemize}
+    \item Sistema operacional: Ubuntu 22.04 (Jammy) via WSL;
+    \item Kernel: Linux 6.6.114.1-microsoft-standard-WSL2;
+    \item Processador: AMD Ryzen 5 5600x, 6 núcleos / 12 threads;
+    \item Memória RAM: 32 GB DDR4 (2x16 GB) 3200Mhz;
+    \item Armazenamento: SSD NVMe de 500 GB KINGSTON SNVS500G.
+\end{itemize}
+
+\subsection{Softwares}
+
+\begin{itemize}
+    \item Docker: versão 29.5.3;
+    \item Docker Compose: versão v5.1.4;
+    \item Rust: versão 1.95.0;
+    \item wasm-pack: 0.14.0;
+    \item wasm-bindgen: 0.2.121;
+	\item Rayon: 1.8;
+	\item Puppeteer: 24.43.1;
+	\item Node.js: v24;
+	\item npm: 10.9.4.
+\end{itemize}
+
+\section{Benchmarking}
+
+Inicialmente, foi considerada a utilização de bibliotecas como Criterion e Hyperfine para a realização do benchmarking. Entretanto, para simplificar a implementação, foram desenvolvidos scripts responsáveis por automatizar a coleta de métricas utilizando o Docker, por meio do comando docker stats, além de código em Python para formatação e processamento dos dados coletados.
+
+Essa abordagem também permitiu alterar parâmetros dos testes por meio de arquivos de configuração e realizar ajustes finos, buscando reduzir ao máximo interferências externas nos resultados.
+
+\subsection{Avaliação}
+
+Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo.
+
+Foi utilizado um intervalo de 2 segundo entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (standby) pelo container e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página web. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (idle) antes e depois do início dos testes. Além disso, o container era parado e então iniciado antes de cada algoritmo para remover memória em cache.

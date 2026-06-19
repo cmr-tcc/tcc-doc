@@ -1,11 +1,70 @@
 \chapter{Revisão da Literatura}
 
-\citeonline{Moh06} desenvolveram um trabalho utilizando MD no qual o objetivo foi desenvolver modelos para classificação de doenças do arroz egípcio. Um dos algoritmos de aprendizagem utilizado foi a RNA. A RNA foi construída e treinada utilizando uma configuração de 52 entradas, 33 neurônios na camada oculta, 5 saídas, taxa de aprendizagem de 0.3, momento de 0.2 e 500 iterações. O modelo obtido para a previsão de doenças de arroz atingiu um índice de acerto de 96,4\% para o conjunto de dados de teste. Este resultado demonstra a grande eficiência da aplicação de RNAs.
+Nesta seção são abordados os principais fundamentos e características técnicas das tecnologias Rust e WebAssembly. Inicialmente, apresenta-se a linguagem Rust, sua performance e sua proposta de garantir segurança de memória sem o uso de coletor de lixo, delegando o controle de alocação ao compilador por meio do modelo de ownership. Em seguida, discute-se o uso de WebAssembly como padrão binário de baixo nível suportado pelos principais navegadores, abordando sua arquitetura, modelo de execução e o processo de compilação de código Rust para esse formato.
 
-O processo de mineração de dados é ilustrado na Figura~\ref{fig:mineracao}.
+\section{Rust: fundamentos, segurança e performance}
 
-\begin{figure}
-	\centering
-	\caption{Etapas da mineração de dados}\label{fig:mineracao}
-	\includegraphics[scale=1.0]{media/mineracao}
-\end{figure}
+Rust é uma linguagem de programação de sistemas que nasceu de uma necessidade real: criar software rápido sem abrir mão da segurança. Desde que a Mozilla começou a patrocinar seu desenvolvimento em 2010, a linguagem foi ganhando espaço na comunidade devido a forma como ela lida com dois problemas que sempre andaram juntos no desenvolvimento de software: desempenho e segurança de memória.
+
+\subsection{Segurança: o Modelo de Ownership e Borrowing}
+
+Se o desempenho de Rust já impressiona, é na segurança que a linguagem realmente se destaca. Estima-se que cerca de 70\% das vulnerabilidades de segurança catalogadas pelo Microsoft Security Response Center têm origem em erros de gerenciamento de memória \cite{bugden2022}. Rust ataca esse problema de frente com um sistema chamado ownership (propriedade).
+
+A ideia é simples: cada valor em Rust tem um único dono. Quando esse dono sai de cena, o valor some junto. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como use after free, comum em C e frequentemente explorado por hackers.
+
+Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o ownership, existe o borrowing (empréstimo). As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo,referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
+
+Essa regra é verificada pelo compilador e impede um tipo de erro muito difícil de depurar chamado condição de corrida (data race), que acontece quando duas partes do programa tentam modificar o mesmo dado ao mesmo tempo. O compilador rejeita esse código antes de executar. A solução é garantir que as referências não se sobreponham.
+
+Outro ponto importante é que Rust não permite manipular endereços de memória diretamente fora de contextos explicitamente marcados como unsafe. Na prática, isso significa que todo acesso a listas e arrays é verificado automaticamente: se o programa tentar acessar uma posição inexistente, ele encerra de forma controlada em vez de continuar operando com dados corrompidos ou expondo informações que não deveria \cite{bugden2022}. Esse tipo de proteção teria evitado o Heartbleed, uma das maiores vulnerabilidades da história da internet, que afetou uma parcela expressiva dos maiores sites HTTPS do mundo ao permitir que dados fossem lidos além dos limites permitidos da memória.
+
+Por fim, Rust também elimina o conceito de ponteiro nulo, aquele valor que representa "nada" e que em C e C++ frequentemente causa travamentos silenciosos. No lugar, Rust usa o tipo Option, que obriga o programador a decidir explicitamente o que fazer quando um valor pode não existir \cite{bugden2022}.
+
+O que torna tudo isso notável é que essas verificações acontecem em tempo de compilação. Erros que em outras linguagens só aparecem quando o programa já está rodando, às vezes em produção, às vezes explorados por um hacker, em Rust são detectados antes mesmo de o programa existir \cite{bugden2022}.
+
+\section{WebAssembly: ambiente e características}
+
+Se Rust resolve o problema de escrever código seguro e eficiente, o WebAssembly resolve um problema diferente: como fazer esse código ser executado dentro de um navegador com desempenho próximo ao nativo. É justamente essa combinação que torna as duas tecnologias complementares e justifica o foco deste trabalho.
+
+Por muito tempo, o JavaScript foi a única linguagem executada pelos navegadores. Isso funcionou para páginas simples, mas com o crescimento de aplicações mais pesadas, editores de imagem, jogos, processamento de vídeo, suas limitações ficaram evidentes. Foi para resolver esse problema que Google, Microsoft, Mozilla e Apple se uniram para criar o WebAssembly, lançado em 2017 como padrão oficial do W3C \cite{haas2017}.
+
+WebAssembly é um formato binário compacto de baixo nível que executa com desempenho próximo ao nativo, servindo como alvo de compilação para linguagens como Rust, C e C++. Ele não foi criado para substituir o JavaScript, mas para trabalhar ao lado dele: enquanto o JavaScript cuida da interface e das interações, o Wasm assume as partes que exigem mais processamento \cite{mdn2026}.
+
+\subsection{Arquitetura e Funcionamento}
+
+Um programa WebAssembly é organizado em módulos isolados, onde o código de um módulo não acessa dados de outro a menos que isso seja explicitamente permitido. O armazenamento de dados acontece em uma estrutura chamada memória linear, um vetor de bytes completamente separado do código executável e das estruturas internas do motor de execução. Isso garante que mesmo um programa com falha não consiga corromper o ambiente ao redor \cite{moric2022}.
+
+Esse isolamento tem uma consequência prática importante: módulos de origens diferentes podem executar no mesmo processo sem interferir uns nos outros, o que viabiliza o uso do Wasm em ambientes como servidores na nuvem e dispositivos embarcados, não apenas em navegadores \cite{moric2022}.
+
+\subsection{Segurança}
+
+A segurança faz parte da especificação do WebAssembly desde o início, e não foi adicionada depois como um recurso extra. Um módulo Wasm não possui acesso a nenhum recurso do sistema, arquivos, redes ou dispositivos, a menos que o ambiente hospedeiro conceda esse acesso de forma explícita. Além disso, o fluxo de execução é validado antes de o programa executar por meio de um mecanismo chamado integridade do fluxo de controle (Control-Flow Integrity), que impede que código malicioso redireciona a execução para posições não autorizadas na memória \cite{moric2022}.
+
+Como os métodos do WebAssembly são tipados, o uso incorreto de tipos, como passar um valor do tipo errado para uma função, não é possível, o que reforça ainda mais a confiabilidade do ambiente de execução. Quando combinado com as garantias de segurança de memória do Rust, esse modelo cria uma camada dupla de proteção: o compilador Rust elimina os erros antes da geração do binário, e o WebAssembly garante que o binário gerado rode dentro de limites seguros \cite{moric2022}.
+
+\subsection{Compilação de Rust para WebAssembly}
+
+O processo de transformar código Rust em um módulo WebAssembly é direto e bem suportado pelo ecossistema da linguagem. O fluxo básico envolve três etapas: o código é escrito em Rust normalmente, compilado para o formato .wasm por meio de ferramentas como o wasm-pack, e então carregado e executado pelo ambiente de destino,seja um navegador, um servidor ou outro runtime compatível.
+
+O wasm-pack é a principal ferramenta para esse processo no ecossistema Rust. Ela cuida de compilar o código, gerar os arquivos de integração com JavaScript e empacotar tudo em um formato pronto para ser publicado ou importado por uma aplicação web. Por baixo, o compilador Rust utiliza o backend LLVM para gerar o binário .wasm, o mesmo backend responsável pelas otimizações que tornam o código Rust tão eficiente em ambiente nativo \cite{moric2022}.
+
+Vale destacar que nem todo código Rust compila para WebAssembly sem adaptações. Funcionalidades que dependem diretamente do sistema operacional, como acesso a arquivos ou criação de threads, não estão disponíveis no ambiente do navegador por padrão.
+
+\section{ESTUDOS COMPARATIVOS DE DESEMPENHO}
+
+Compreender o impacto do WebAssembly no desempenho de aplicações Rust exige fazer duas análises: primeiro, o que torna o Rust eficiente em ambiente nativo; segundo, o que acontece com esse desempenho quando o mesmo código é compilado para WebAssembly e executado dentro do navegador. As subseções a seguir percorrem essas duas camadas, formando a base comparativa que orienta a investigação empírica deste trabalho.
+
+\subsection{Rust: Desempenho sem Runtime ou Garbage Collector}
+Quando um programa é executado, ele precisa reservar espaço na memória para guardar seus dados, e também precisa liberar esse espaço quando os dados não são mais necessários. Linguagens como Java e Python fazem isso automaticamente por meio de um mecanismo chamado coletor de lixo (garbage collector), que fica em segundo plano verificando o que pode ser descartado. Isso é conveniente, mas tem um custo: o coletor consome processamento, ocupa memória extra e pode pausar o programa em momentos imprevisíveis para fazer sua limpeza \cite{bugden2022}.
+
+Rust não tem coletor de lixo. Em vez disso, o compilador analisa o código antes de o programa ser executado e já determina exatamente quando cada dado deve ser criado e quando deve ser descartado. Quando uma variável chega ao fim do bloco em que foi criada, sua memória é liberada automaticamente, sem nenhuma instrução extra do programador e sem nenhum custo em tempo de execução.
+
+Esse modelo elimina tanto o trabalho manual de liberar memória, que em C frequentemente gera erros, quanto a sobrecarga do coletor de lixo. O resultado é um programa que roda com eficiência comparável à de C e C++, mas sem exigir que o programador gerencie a memória na mão \cite{bugden2022}.
+
+É esse nível de eficiência nativa que serve de referência para a comparação com o WebAssembly. Quando o mesmo código Rust é compilado para o formato .wasm e executado no navegador, parte dessas garantias de desempenho precisa ser reexaminada, pois o ambiente de execução impõe restrições e custos que não existem na compilação nativa.
+
+\subsection{WebAssembly: Desempenho Frente ao JavaScript e à Execução Nativa}
+
+Dentro do ambiente do navegador, o WebAssembly já representa um avanço considerável em relação ao JavaScript. Em tarefas computacionais intensas, o WebAssembly supera o JavaScript, sendo em média 1,3 vezes mais rápido que o JavaScript tradicional, seu antecessor mais próximo \cite{jangda2019}. No entanto, há uma ressalva importante: transferir dados complexos para dentro da memória do módulo tem um custo. Para passar uma string ao Wasm, por exemplo, é necessário codificá-la, localizar espaço livre na memória linear e escrevê-la byte a byte, um processo que pode anular o ganho de desempenho em operações simples com texto. Quando o dado já está na memória ou o algoritmo é suficientemente complexo, o Wasm volta a superar o JavaScript por ampla margem \cite{moric2022}.
+
+Contudo, a comparação mais relevante para este trabalho não é entre WebAssembly e JavaScript, mas entre WebAssembly e a execução nativa do próprio Rust. Nesse confronto, o cenário é diferente. Estudos mostram que aplicações compiladas para WebAssembly são executadas, em média, entre 45\% e 55\% mais devagar do que o equivalente nativo, a depender do navegador utilizado \cite{jangda2019}. Esse é exatamente o gap que este trabalho busca caracterizar no contexto específico de aplicações Rust, contribuindo com dados concretos para orientar decisões sobre quando a portabilidade do Wasm justifica a perda de desempenho em relação à execução nativa.

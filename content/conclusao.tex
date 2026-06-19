@@ -1,5 +1,7 @@
-\chapter{Conclusão}
+\chapter{CONSIDERAÇÕES FINAIS}
 
-\setlength{\afterchapskip}{-\baselineskip}
+O desenvolvimento deste trabalho até o presente momento permitiu consolidar fundamentos teóricos e metodológicos necessários para o andamento da análise comparativa entre a execução nativa de código rust e sua execução compilada para WebAssembly, avaliando os impactos em tempo de execução, consumo de memória e uso de CPU. 
 
-\lipsum  
+Para embasar essa análise, foram abordados os fundamentos da linguagem Rust e as características do WebAssembly na revisão da literatura. Além disso, na etapa prática foram selecionados, do Computer Language Benchmarks Game, 5 algoritmos de diferentes classes de problemas, implementados em Rust, portados para WebAssembly e executados em ambiente controlado via Docker em três máquinas distintas. Os resultados preliminares já apontam diferenças de desempenho consistentes entre os dois ambientes, com o WebAssembly apresentando tempos de execução superiores ao Rust nativo na maioria dos algoritmos avaliados. Já as análises de uso de CPU e memória ainda estão em andamento, uma vez que a sobrecarga introduzido pelo ambiente de execução do Puppeteer exige tratamento adicional para isolar o consumo real dos algoritmos. 
+
+Como próximos passos, será concluída a análise dos dados coletados e apresentará as conclusões finais do trabalho, identificando em quais cenários o WebAssembly representa uma alternativa viável à execução nativa de aplicações Rust. 

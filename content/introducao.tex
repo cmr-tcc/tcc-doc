@@ -1,20 +1,29 @@
 \chapter{Introdução}
 
-Este trabalho utiliza o pacote abntex~\cite{abntex2classe}.Edite o arquivo uepg.sty para incluir dados sobre a instituição (setor de conhecimento e departamento).
+O crescimento das aplicações web modernas e a necessidade cada vez maior de desempenho no lado do cliente têm tornado a escolha do ambiente de execução um aspecto importante no desenvolvimento de software. Sendo assim, o WebAssembly tem se destacado por permitir a execução de código compilado diretamente no navegador com desempenho próximo ao nativo. Paralelo a isso, a linguagem Rust vem sendo utilizada como uma das principais opções para gerar código nesse formato.
 
-Edite o arquivo tcc.tex para incluir os arquivos de sua dissertação. Os arquivos que são incluídos estão listados abaixo:
+Mesmo com sua popularidade, a execução de aplicações Rust por meio do WebAssembly ainda apresenta limitações, já que o ambiente do navegador impõe restrições que não existem na execução nativa. Além disso, ainda há poucos estudos experimentais que analisem de forma prática o impacto dessa abordagem sobre o desempenho.
 
-\begin{itemize}	
-	\item introducao
-	\item revisao
- 	\item metodologia
-	\item resultados
-	\item conclusao
-\end{itemize}
+Diante disso, surge a questão: qual é o impacto da execução de aplicações Rust via WebAssembly no desempenho quando comparado à execução nativa, considerando diferentes tipos de problemas computacionais, e em quais situações essa abordagem pode ser considerada viável?
 
-Você pode incluir mais arquivos editando o tcc.tex, caso sua dissertação necessite de mais capítulos.
+O objetivo deste trabalho é comparar a execução nativa de programas escritos em Rust com a execução dos mesmos programas compilados para WebAssembly no navegador, analisando o impacto em desempenho e consumo de recursos. Para isso, foram utilizados algoritmos representativos do The Computer Language Benchmarks Game, adaptados para execução nos dois ambientes e avaliados sob condições controladas para coleta de métricas comparáveis. 
 
-Edite os arquivos siglas.tex, simbolos.tex e resumo.tex para incluir o texto de sua dissertação.
+\section{Objetivos}
 
-Teste de citação~\cite{teste}.
+\subsection {Objetivo geral}
 
+Este trabalho tem como objetivo geral realizar uma análise comparativa entre a execução de código Rust e a execução do mesmo código compilado para WebAssembly no navegador, avaliando os impactos em desempenho e consumo de recursos.
+
+\subsection {Objetivos Específicos}
+
+Selecionar algoritmos representativos de diferentes classes de problemas computacionais a partir do The Computer Language Benchmarks Game \cite{bench2026}, adequados para execução nos dois ambientes avaliados.
+
+Avaliar o consumo de recursos computacionais e tempo de execução de cada um dos algoritmos escolhidos.
+
+Elaborar diretrizes sobre em quais cenários a execução via WebAssembly representa uma alternativa viável à execução nativa.
+
+\section{Justificativa}
+
+O avanço das aplicações web modernas têm impulsionado a busca por tecnologias capazes de oferecer desempenho próximo ao nativo diretamente no navegador. Nesse cenário, a combinação entre Rust e WebAssembly desponta como uma alternativa promissora, reunindo as garantias de segurança e eficiência da linguagem à portabilidade do formato binário suportado pelos principais navegadores.
+
+Embora existam estudos comparando execução nativa e WebAssembly, estes concentram-se majoritariamente em linguagens como C e C++, deixando Rust pouco explorado nesse contexto \cite{jangda2019}. Este trabalho se justifica, portanto, tanto pelo valor técnico de produzir dados comparativos concretos sobre os dois modelos de execução quanto pela contribuição ao campo da Engenharia de Software, oferecendo subsídios para decisões arquiteturais em projetos que avaliem a viabilidade de adotar WebAssembly como ambiente de execução.

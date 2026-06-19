@@ -42,6 +42,11 @@ abnt-last-names = abnt, % trata sobrenomes 'estritamente' conforme a ABNT
 abnt-repeated-author-omit = no
 ]{abntex2cite}
 
+% mantém o texto justificado
+\usepackage[none]{hyphenat}
+\tolerance=1000
+\emergencystretch=3em
+
 \captionsetup[table]{
 	singlelinecheck=false, % alinha o caption da tabela à esquerda
 }
@@ -94,8 +99,8 @@ abnt-repeated-author-omit = no
 \renewcommand{\rmdefault}{phv} % arial
 \renewcommand{\sfdefault}{phv} % arial
 
-\renewcommand{\lstlistingname}{Código} % formatação de código fonte
-\renewcommand{\lstlistlistingname}{Lista de códigos}
+% \renewcommand{\lstlistingname}{Código} % formatação de código fonte
+% \renewcommand{\lstlistlistingname}{Lista de códigos}
 
 \input{content/capa}
 \tipotrabalho{Trabalho de Conclusão de Curso}
@@ -153,7 +158,7 @@ abnt-repeated-author-omit = no
 \makeindex % compila o índice
 
 % lista de códigos
-\newlistof{lstlistoflistings}{lol}{\lstlistlistingname}
+% \newlistof{lstlistoflistings}{lol}{\lstlistlistingname}
 
 \begin{document}
 	\selectlanguage{brazil}
@@ -164,13 +169,13 @@ abnt-repeated-author-omit = no
 	% (o * indica que haverá a ficha bibliográfica)
 	\imprimirfolhaderosto
 
-	\input{content/dedicatoria}
+	% \input{content/dedicatoria}
 	
 	\begin{agradecimentos}
 	\input{content/agradecimentos}
 	\end{agradecimentos}
 	
-	\input{content/epigrafe}
+	% \input{content/epigrafe}
 
 	\setlength{\absparsep}{18pt}
 	\begin{resumo}
@@ -194,16 +199,16 @@ abnt-repeated-author-omit = no
 	\cleardoublepage
 
 	% lista de siglas
-	\lstlistoflistings*
+	% \lstlistoflistings*
 	\cleardoublepage
 	\begin{siglas}
 	\input{content/siglas}
 	\end{siglas}
 
 	% lista de símbolos
-	\begin{simbolos}
-	\input{content/simbolos}
-	\end{simbolos}
+	% \begin{simbolos}
+	% \input{content/simbolos}
+	% \end{simbolos}
 	
 	% sumário
 	\pdfbookmark[0]{\contentsname}{toc}
@@ -225,33 +230,33 @@ abnt-repeated-author-omit = no
 	\bibliography{referencias}
 
 % apêndices
-\begin{apendicesenv}
+% \begin{apendicesenv}
 	
-	\renewcommand{\thetable}{\Alph{chapter}\arabic{table}}
-	\setcounter{table}{0}
-	\clearpage
-		\begingroup
-		\makeatletter
-		\let\clearpage\relax
-		\vspace*{\fill}
-		\vspace*{\dimexpr-50\p@-\baselineskip}
-		\chapter{Análise Estatística}
-		\vspace*{\fill}
-		\endgroup 
-	\clearpage
+% 	\renewcommand{\thetable}{\Alph{chapter}\arabic{table}}
+% 	\setcounter{table}{0}
+% 	\clearpage
+% 		\begingroup
+% 		\makeatletter
+% 		\let\clearpage\relax
+% 		\vspace*{\fill}
+% 		\vspace*{\dimexpr-50\p@-\baselineskip}
+% 		\chapter{Análise Estatística}
+% 		\vspace*{\fill}
+% 		\endgroup 
+% 	\clearpage
 	
-	\lipsum[50]
+% 	\lipsum[50]
 	
-\end{apendicesenv}
+% \end{apendicesenv}
 
 % anexos
-\begin{anexosenv}
+% \begin{anexosenv}
 
-	\chapter{Laudo técnico}
+% 	\chapter{Laudo técnico}
 
-	\lipsum[30]
+% 	\lipsum[30]
 		
-\end{anexosenv}
+% \end{anexosenv}
 
 % índice remissivo
 \phantompart
