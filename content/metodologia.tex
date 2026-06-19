@@ -10,7 +10,7 @@ Em relação ao Rust, foram abordados tópicos como o sistema de propriedade (\e
 
 \section{IMPLEMENTAÇÃO PRÁTICA}
 
-Na etapa de implementação, foram utilizados cinco algoritmos distintos em Rust, cada um explora diferentes características de execução, como operações de inteiros e de pontos flutuantes, manipulação de arrays, laços de repetição, manipulação de bits, geração de número pseudo aleatórios e saída de dados. Os algoritmos foram obtidos do site The Computer Language Benchmarks Game \cite{bench2026} e sofreram adaptações mínimas para serem executadas no ambiente de teste. Buscou-se utilizar o mínimo possível de bibliotecas externas, limitando-se à biblioteca Rayon para processamento paralelo e às bibliotecas nativas da linguagem, a fim de reduzir interferências externas nos resultados de desempenho.
+Na etapa de implementação, foram utilizados cinco algoritmos distintos em Rust, cada um explora diferentes características de execução, como operações de inteiros e de pontos flutuantes, manipulação de \emph{arrays}, laços de repetição, manipulação de \emph{bits}, geração de número pseudo aleatórios e saída de dados. Os algoritmos foram obtidos do site The Computer Language Benchmarks Game \cite{bench2026} e sofreram adaptações mínimas para serem executadas no ambiente de teste. Buscou-se utilizar o mínimo possível de bibliotecas externas, limitando-se à biblioteca Rayon para processamento paralelo e às bibliotecas nativas da linguagem, a fim de reduzir interferências externas nos resultados de desempenho.
 
 No contexto do Rust, foi desenvolvido um código de entrada responsável por receber, por meio de parâmetros posicionais, o algoritmo a ser executado e a quantidade de execuções. Esse código também realiza a coleta do tempo de início e término da execução, mantendo os algoritmos isolados do processo de metrificação.
 
@@ -21,10 +21,10 @@ Para o WebAssembly, os algoritmos implementados em Rust foram portados utilizand
 Os seguintes algoritmos foram utilizados na implementação prática:
 
 \begin{itemize}	
-    \item fannkuch-redux: foca em operações com inteiros e manipulação de arrays;
+    \item fannkuch-redux: foca em operações com inteiros e manipulação de \emph{arrays};
     \item n-body: realiza operações de ponto flutuante;
     \item spectral-norm: concentra-se em laços de repetição;
-    \item mandelbrot: faz a manipulação de bits;
+    \item mandelbrot: faz a manipulação de \emph{bits};
     \item fasta: avalia a capacidade de geração de números pseudo aleatórios e saída de dados.
 \end{itemize}
 
