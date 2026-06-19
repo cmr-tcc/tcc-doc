@@ -4,7 +4,7 @@ Nesta seção são abordados os principais fundamentos e características técni
 
 \section{Rust: fundamentos, segurança e performance}
 
-Rust é uma linguagem de programação de sistemas que nasceu de uma necessidade real: criar software rápido sem abrir mão da segurança. Desde que a Mozilla começou a patrocinar seu desenvolvimento em 2010, a linguagem foi ganhando espaço na comunidade devido a forma como ela lida com dois problemas que sempre andaram juntos no desenvolvimento de software: desempenho e segurança de memória.
+Rust é uma linguagem de programação de sistemas que nasceu de uma necessidade real: criar software rápido sem abrir mão da segurança. Desde que a Mozilla começou a patrocinar seu desenvolvimento em 2010, a linguagem foi ganhando espaço na comunidade devido à forma como ela lida com dois problemas que sempre andaram juntos no desenvolvimento de software: desempenho e segurança de memória.
 
 \subsection{Segurança: o Modelo de Ownership e Borrowing}
 
@@ -12,7 +12,7 @@ Se o desempenho de Rust já impressiona, é na segurança que a linguagem realme
 
 A ideia é simples: cada valor em Rust tem um único dono. Quando esse dono sai de cena, o valor some junto. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por hackers.
 
-Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo,referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
+Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
 
 Essa regra é verificada pelo compilador e impede um tipo de erro muito difícil de depurar chamado condição de corrida (\emph{data race}), que acontece quando duas partes do programa tentam modificar o mesmo dado ao mesmo tempo. O compilador rejeita esse código antes de executar. A solução é garantir que as referências não se sobreponham.
 
@@ -38,7 +38,7 @@ Esse isolamento tem uma consequência prática importante: módulos de origens d
 
 \subsection{Segurança}
 
-A segurança faz parte da especificação do WebAssembly desde o início, e não foi adicionada depois como um recurso extra. Um módulo Wasm não possui acesso a nenhum recurso do sistema, arquivos, redes ou dispositivos, a menos que o ambiente hospedeiro conceda esse acesso de forma explícita. Além disso, o fluxo de execução é validado antes de o programa executar por meio de um mecanismo chamado integridade do fluxo de controle (\emph{Control-Flow Integrity}), que impede que código malicioso redireciona a execução para posições não autorizadas na memória \cite{moric2022}.
+A segurança faz parte da especificação do WebAssembly desde o início, e não foi adicionada depois como um recurso extra. Um módulo Wasm não possui acesso a nenhum recurso do sistema, arquivos, redes ou dispositivos, a menos que o ambiente hospedeiro conceda esse acesso de forma explícita. Além disso, o fluxo de execução é validado antes de o programa executar por meio de um mecanismo chamado integridade do fluxo de controle (\emph{Control-Flow Integrity}), que impede que código malicioso redirecione a execução para posições não autorizadas na memória \cite{moric2022}.
 
 Como os métodos do WebAssembly são tipados, o uso incorreto de tipos, como passar um valor do tipo errado para uma função, não é possível, o que reforça ainda mais a confiabilidade do ambiente de execução. Quando combinado com as garantias de segurança de memória do Rust, esse modelo cria uma camada dupla de proteção: o compilador Rust elimina os erros antes da geração do binário, e o WebAssembly garante que o binário gerado rode dentro de limites seguros \cite{moric2022}.
 
