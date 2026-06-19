@@ -6,7 +6,7 @@ A abordagem deste trabalho é quantitativa, buscando mensurar o desempenho e o c
 
 Foram reunidas informações sobre Rust e WebAssembly na pesquisa bibliográfica, destacando seu contexto histórico, características técnicas e aplicabilidade. 
 
-Em relação ao Rust, foram abordados tópicos como o sistema de propriedade (ownership) e o modelo de empréstimo de valores (borrowing). Já para o WebAssembly, destacaram-se aspectos como o gerenciamento de memória, a segurança proporcionada pela restrição de permissões e sua integração com Rust por meio da portabilidade de código utilizando ferramentas como o wasm-pack.
+Em relação ao Rust, foram abordados tópicos como o sistema de propriedade (\emph{ownership}) e o modelo de empréstimo de valores (\emph{borrowing}). Já para o WebAssembly, destacaram-se aspectos como o gerenciamento de memória, a segurança proporcionada pela restrição de permissões e sua integração com Rust por meio da portabilidade de código utilizando ferramentas como o wasm-pack.
 
 \section{IMPLEMENTAÇÃO PRÁTICA}
 
@@ -14,7 +14,7 @@ Na etapa de implementação, foram utilizados cinco algoritmos distintos em Rust
 
 No contexto do Rust, foi desenvolvido um código de entrada responsável por receber, por meio de parâmetros posicionais, o algoritmo a ser executado e a quantidade de execuções. Esse código também realiza a coleta do tempo de início e término da execução, mantendo os algoritmos isolados do processo de metrificação.
 
-Para o WebAssembly, os algoritmos implementados em Rust foram portados utilizando a ferramenta wasm-pack. Além disso, foi criado um arquivo de entrada em HTML para carregar uma página contendo código JavaScript capaz de executar os algoritmos portados. Essa página também aceita parâmetros via URL para definir o algoritmo e a quantidade de execuções. A execução ocorre em um navegador sem interface gráfica (headless), utilizando a biblioteca Puppeteer de JavaScript.
+Para o WebAssembly, os algoritmos implementados em Rust foram portados utilizando a ferramenta wasm-pack. Além disso, foi criado um arquivo de entrada em HTML para carregar uma página contendo código JavaScript capaz de executar os algoritmos portados. Essa página também aceita parâmetros via URL para definir o algoritmo e a quantidade de execuções. A execução ocorre em um navegador sem interface gráfica (\emph{headless}), utilizando a biblioteca Puppeteer de JavaScript.
 
 \subsection{Algoritmos}
 
@@ -30,7 +30,7 @@ Os seguintes algoritmos foram utilizados na implementação prática:
 
 \subsection{Configuração dos Testes}
 
-Cada algoritmo foi executado 10 vezes em sequência. Foram realizados cenários com e sem 3 execuções prévias antes da carga principal, com o objetivo de avaliar o impacto da compilação Just-In-Time (JIT) e do uso de cache para melhorar a performance. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura~\ref{fig:diagrama-execucao-testes}.
+Cada algoritmo foi executado 10 vezes em sequência. Foram realizados cenários com e sem 3 execuções prévias antes da carga principal, com o objetivo de avaliar o impacto da compilação JIT e do uso de \emph{cache} para melhorar a performance. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura~\ref{fig:diagrama-execucao-testes}.
 
 \begin{figure}[H]
 	\centering
@@ -92,7 +92,7 @@ Computador 3:
 
 \section{Benchmarking}
 
-Inicialmente, foi considerada a utilização de bibliotecas como Criterion e Hyperfine para a realização do benchmarking. Entretanto, para simplificar a implementação, foram desenvolvidos scripts responsáveis por automatizar a coleta de métricas utilizando o Docker, por meio do comando docker stats, além de código em Python para formatação e processamento dos dados coletados.
+Inicialmente, foi considerada a utilização de bibliotecas como Criterion e Hyperfine para a realização do \emph{benchmarking}. Entretanto, para simplificar a implementação, foram desenvolvidos \emph{scripts} responsáveis por automatizar a coleta de métricas utilizando o Docker, por meio do comando docker stats, além de código em Python para formatação e processamento dos dados coletados.
 
 Essa abordagem também permitiu alterar parâmetros dos testes por meio de arquivos de configuração e realizar ajustes finos, buscando reduzir ao máximo interferências externas nos resultados.
 
@@ -100,4 +100,4 @@ Essa abordagem também permitiu alterar parâmetros dos testes por meio de arqui
 
 Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo.
 
-Foi utilizado um intervalo de 2 segundo entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (standby) pelo container e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página web. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (idle) antes e depois do início dos testes. Além disso, o container era parado e então iniciado antes de cada algoritmo para remover memória em cache.
+Foi utilizado um intervalo de 2 segundo entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois do início dos testes. Além disso, o contêiner era parado e então iniciado antes de cada algoritmo para remover memória em \emph{cache}.
