@@ -30,7 +30,7 @@ Os seguintes algoritmos foram utilizados na implementação prática:
 
 \subsection{Configuração dos Testes}
 
-Cada algoritmo foi executado 10 vezes em sequência. Foram realizados cenários com e sem 3 execuções prévias antes da carga principal, com o objetivo de avaliar o impacto da compilação JIT e do uso de \emph{cache} para melhorar a performance. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura~\ref{fig:diagrama-execucao-testes}.
+Cada algoritmo foi executado 10 vezes em sequência. Foram realizados cenários com e sem 3 execuções prévias antes da carga principal, com o objetivo de avaliar o impacto da compilação JIT e do uso de \emph{cache} para melhorar a performance. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura \ref{fig:diagrama-execucao-testes}.
 
 \begin{figure}[H]
 	\centering
@@ -102,3 +102,27 @@ Essa abordagem também permitiu alterar parâmetros dos testes por meio de arqui
 Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo.
 
 Foi utilizado um intervalo de 2 segundos entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois do início dos testes. Além disso, o contêiner era parado e então iniciado antes de cada algoritmo para remover memória em \emph{cache}.
+
+Para a análise de desempenho temporal, o overhead percentual do WebAssembly em relação ao Rust nativo foi calculado pela equação:
+
+\begin{equation}
+overhead (\%) = (twasm / trust - 1) * 100
+\end{equation}
+
+Onde trust e twasm representam os tempos médios de execução em milissegundos de cada ambiente.
+
+Para a análise de memória, foram derivadas três métricas a partir das amostras coletadas. O consumo de \emph{baseline} corresponde ao mínimo entre as amostras em que a utilização de CPU era inferior a 10\%, representando o consumo do contêiner em repouso. O consumo de pico corresponde ao máximo entre as amostras com CPU acima de 80\%, representando o consumo durante a execução ativa. O consumo líquido é dado pela diferença entre pico e \emph{baseline}:
+
+\begin{equation}
+baseline = min\{ mi~|~cpui < 10\% \}
+\end{equation}
+
+\begin{equation}
+pico = max\{ mi~|~cpui > 80\% \}
+\end{equation}
+
+\begin{equation}
+líquido = pico - baseline
+\end{equation}
+
+Essa distinção é necessária porque o contêiner Wasm mantém o Chrome Headless e o Puppeteer em execução permanente, elevando o \emph{baseline} a aproximadamente 200 MiB independentemente do algoritmo executado.

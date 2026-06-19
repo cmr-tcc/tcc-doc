@@ -42,6 +42,8 @@ abnt-last-names = abnt, % trata sobrenomes 'estritamente' conforme a ABNT
 abnt-repeated-author-omit = no
 ]{abntex2cite}
 
+\usepackage{float}
+
 % mantém o texto justificado
 \usepackage[none]{hyphenat}
 \tolerance=1000
@@ -129,18 +131,18 @@ abnt-repeated-author-omit = no
 \makeatother
 
 % possibilita criação de Quadros e Lista de quadros. Ver https://github.com/abntex/abntex2/issues/176
-\newcommand{\quadroname}{Quadro}
-\newcommand{\listofquadrosname}{Lista de quadros}
+% \newcommand{\quadroname}{Quadro}
+% \newcommand{\listofquadrosname}{Lista de quadros}
 
-\newfloat[chapter]{quadro}{loq}{\quadroname}
-\newlistof{listofquadros}{loq}{\listofquadrosname}
-\newlistentry{quadro}{loq}{0}
+% \newfloat[chapter]{quadro}{loq}{\quadroname}
+% \newlistof{listofquadros}{loq}{\listofquadrosname}
+% \newlistentry{quadro}{loq}{0}
 
 % configurações para atender às regras da ABNT
-\setfloatadjustment{quadro}{\centering}
-\counterwithout{quadro}{chapter}
-\renewcommand{\cftquadroname}{\quadroname\space} 
-\renewcommand*{\cftquadroaftersnum}{\hfill--\hfill}
+% \setfloatadjustment{quadro}{\centering}
+% \counterwithout{quadro}{chapter}
+% \renewcommand{\cftquadroname}{\quadroname\space} 
+% \renewcommand*{\cftquadroaftersnum}{\hfill--\hfill}
 
 \setfloatlocations{quadro}{hbtp} % ver https://github.com/abntex/abntex2/issues/176
 
@@ -189,9 +191,9 @@ abnt-repeated-author-omit = no
 	\cleardoublepage
 
 	% lista de quadros
-	\pdfbookmark[0]{\listofquadrosname}{loq}
-	\listofquadros*
-	\cleardoublepage
+	% \pdfbookmark[0]{\listofquadrosname}{loq}
+	% \listofquadros*
+	% \cleardoublepage
 
 	% lista de tabelas
 	\pdfbookmark[0]{\listtablename}{lot}
