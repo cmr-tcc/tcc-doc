@@ -4,13 +4,13 @@ Nesta seção são abordados os principais fundamentos e características técni
 
 \section{Rust: fundamentos, segurança e performance}
 
-Rust é uma linguagem de programação de sistemas que nasceu de uma necessidade real: criar software rápido sem abrir mão da segurança. Desde que a Mozilla começou a patrocinar seu desenvolvimento em 2010, a linguagem foi ganhando espaço na comunidade devido à forma como ela lida com dois problemas que sempre andaram juntos no desenvolvimento de software: desempenho e segurança de memória.
+Rust é uma linguagem de programação de sistemas desenvolvida a partir da necessidade de conciliar alto desempenho e segurança no desenvolvimento de software. Desde que a Mozilla começou a patrocinar seu desenvolvimento em 2010, a linguagem foi ganhando espaço na comunidade devido à forma como ela lida com dois aspectos historicamente desafiadores no desenvolvimento de software: o desempenho e a segurança de memória.
 
 \subsection{Segurança: o Modelo de Ownership e Borrowing}
 
-Se o desempenho de Rust já impressiona, é na segurança que a linguagem realmente se destaca. Estima-se que cerca de 70\% das vulnerabilidades de segurança catalogadas pelo Microsoft Security Response Center têm origem em erros de gerenciamento de memória \cite{bugden2022}. Rust ataca esse problema de frente com um sistema chamado \emph{ownership} (propriedade).
+Se o desempenho de Rust já se mostra expressivo, é na segurança que a linguagem realmente se destaca. Estima-se que cerca de 70\% das vulnerabilidades de segurança catalogadas pelo Microsoft Security Response Center têm origem em erros de gerenciamento de memória \cite{bugden2022}. Nesse contexto, o Rust aborda diretamente esse problema por meio de um mecanismo denominado \emph{ownership} (propriedade).
 
-A ideia é simples: cada valor em Rust tem um único dono. Quando esse dono sai de cena, o valor some junto. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por hackers.
+O conceito é baseado em um princípio: cada valor em Rust tem um único dono, responsável por seu gerenciamento. Quando o proprietário deixa de existir ou sai de escopo, o valor associado é automaticamente desalocado da memória. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por hackers.
 
 Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
 
