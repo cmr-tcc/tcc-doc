@@ -12,13 +12,106 @@ Se o desempenho de Rust já se mostra expressivo, é na segurança que a linguag
 
 O conceito é baseado em um princípio: cada valor em Rust tem um único dono, responsável por seu gerenciamento. Quando o proprietário deixa de existir ou sai de escopo, o valor associado é automaticamente desalocado da memória. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por hackers.
 
+\begin{lstlisting}[
+    language=Rust,
+    caption={Exemplo de \emph{ownership}: cada valor tem um único dono},
+    label={lst:borrowing}
+]
+fn main() {
+    let nome = String::from("Rust");
+    // O ownership de 'nome' é transferido para 'linguagem'.
+    let linguagem = nome;
+    // A linha abaixo causaria erro de compilação,
+    // porque 'nome' não é mais o dono do valor.
+    println!("{}", nome); // erro!
+    println!("{}", linguagem); // funciona normalmente
+}
+\end{lstlisting}
+
 Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
 
-Essa regra é verificada pelo compilador e impede um tipo de erro muito difícil de depurar chamado condição de corrida (\emph{data race}), que acontece quando duas partes do programa tentam modificar o mesmo dado ao mesmo tempo. O compilador rejeita esse código antes de executar. A solução é garantir que as referências não se sobreponham.
+Essa regra é verificada pelo compilador e impede um tipo de erro muito difícil de depurar chamado condição de corrida (\emph{data race}), que acontece quando duas partes do programa tentam modificar o mesmo dado ao mesmo tempo. 
+
+\begin{lstlisting}[
+    language=Rust,
+    caption={Exemplo de violação das regras de \emph{borrowing} em Rust},
+    label={lst:borrowing}
+]
+fn processar_dados() {
+    let mut dados = String::from("exemplo");
+
+    // Cria uma referência mutável
+    let ref_mut = &mut dados;
+    ref_mut.push_str("modificado");
+
+    // Tenta criar referência imutável enquanto ref_mut existe
+    let ref_imut = &dados;
+
+    println!("{}", ref_mut);
+    println!("{}", ref_imut);
+}
+\end{lstlisting}
+
+O compilador rejeita esse código antes de executar. A solução é garantir que as referências não se sobreponham.
+
+\begin{lstlisting}[
+    language=Rust,
+    caption={Exemplo de \emph{borrowing} correto: referências separadas por escopo},
+    label={lst:borrowing}
+]
+fn main() {
+    let mut valor = String::from("dados");
+
+    {
+        let leitura = &valor;
+        println!("Lendo: {}", leitura);
+    } // 'leitura' termina aqui
+
+    // Agora é seguro criar uma referência mutável
+    let modificacao = &mut valor;
+    modificacao.push_str(" modificados");
+    println!("Novo valor: {}", modificacao);
+}
+\end{lstlisting}
 
 Outro ponto importante é que Rust não permite manipular endereços de memória diretamente fora de contextos explicitamente marcados como \emph{unsafe}. Na prática, isso significa que todo acesso a listas e \emph{arrays} é verificado automaticamente: se o programa tentar acessar uma posição inexistente, ele encerra de forma controlada em vez de continuar operando com dados corrompidos ou expondo informações que não deveria \cite{bugden2022}. Esse tipo de proteção teria evitado o Heartbleed, uma das maiores vulnerabilidades da história da internet, que afetou uma parcela expressiva dos maiores sites HTTPS do mundo ao permitir que dados fossem lidos além dos limites permitidos da memória.
 
+\begin{lstlisting}[
+    language=Rust,
+    caption={Exemplo de acesso fora dos limites causa encerramento seguro},
+    label={lst:borrowing}
+]
+fn main() {
+    let numeros = vec![10, 20, 30];
+    // O vetor tem 3 posições (índices 0, 1 e 2).
+    // Tentar acessar o índice 5 não expõe memória indevida:
+    // o programa encerra com uma mensagem de erro clara.
+    println!("{}", numeros[5]); // panic: index out of bounds
+}
+\end{lstlisting}
+
 Por fim, Rust também elimina o conceito de ponteiro nulo, aquele valor que representa "nada"~e que em C e C++ frequentemente causa travamentos silenciosos. No lugar, Rust usa o tipo Option, que obriga o programador a decidir explicitamente o que fazer quando um valor pode não existir \cite{bugden2022}.
+
+\begin{lstlisting}[
+    language=Rust,
+    caption={Exemplo de \emph{Option} no lugar de ponteiro nulo},
+    label={lst:borrowing}
+]
+fn buscar_nome(id: u32) -> Option<String> {
+    if id == 1 {
+        Some(String::from("Olá, Mundo"))
+    } else {
+        None // sem ponteiro nulo, sem crash silencioso
+    }
+}
+
+fn main() {
+    match buscar_nome(2) {
+        Some(nome) => println!("Encontrado: {}", nome),
+        None => println!("Nenhum usuário com esse id"),
+    }
+}
+\end{lstlisting}
 
 O que torna tudo isso notável é que essas verificações acontecem em tempo de compilação. Erros que em outras linguagens só aparecem quando o programa já está rodando, às vezes em produção, às vezes explorados por um hacker, em Rust são detectados antes mesmo de o programa existir \cite{bugden2022}.
 
@@ -58,6 +151,21 @@ Compreender o impacto do WebAssembly no desempenho de aplicações Rust exige fa
 Quando um programa é executado, ele precisa reservar espaço na memória para guardar seus dados, e também precisa liberar esse espaço quando os dados não são mais necessários. Linguagens como Java e Python fazem isso automaticamente por meio de um mecanismo chamado coletor de lixo (\emph{garbage collector}), que fica em segundo plano verificando o que pode ser descartado. Isso é conveniente, mas tem um custo: o coletor consome processamento, ocupa memória extra e pode pausar o programa em momentos imprevisíveis para fazer sua limpeza \cite{bugden2022}.
 
 Rust não tem coletor de lixo. Em vez disso, o compilador analisa o código antes de o programa ser executado e já determina exatamente quando cada dado deve ser criado e quando deve ser descartado. Quando uma variável chega ao fim do bloco em que foi criada, sua memória é liberada automaticamente, sem nenhuma instrução extra do programador e sem nenhum custo em tempo de execução.
+
+\begin{lstlisting}[
+    language=Rust,
+    caption={Exemplo de quando a memória é liberada automaticamente ao fim do escopo},
+    label={lst:borrowing}
+]
+fn main() {
+    // 'mensagem' é criada aqui e pertence a este escopo
+    let mensagem = String::from("olá, Mundo!");
+    println!("{}", mensagem);
+    // Ao chegar aqui, 'mensagem' sai de escopo
+    // e sua memória é liberada automaticamente pelo compilador.
+    // Nenhuma instrução manual é necessária.
+}
+\end{lstlisting}
 
 Esse modelo elimina tanto o trabalho manual de liberar memória, que em C frequentemente gera erros, quanto a sobrecarga do coletor de lixo. O resultado é um programa que roda com eficiência comparável à de C e C++, mas sem exigir que o programador gerencie a memória na mão \cite{bugden2022}.
 

@@ -26,7 +26,6 @@ brazil % último idioma é o principal do documento
 \usepackage{longtable}	
 \usepackage{listings}
 \usepackage{gantt}
-\usepackage{inconsolata}
 \usepackage{xcolor}
 \usepackage[bottom=2cm,top=3cm,left=3cm,right=2cm]{geometry}
 \usepackage{titlesec}
@@ -60,31 +59,56 @@ abnt-repeated-author-omit = no
 
 \setlength\afterchapskip{\lineskip}
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \lstdefinestyle{mystyle}{
-	backgroundcolor=\color{backcolour},   
-	commentstyle=\color{codegreen},
-	keywordstyle=\color{magenta},
-	numberstyle=\tiny\color{codegray},
-	stringstyle=\color{codepurple},
-	basicstyle=\ttfamily\footnotesize,
-	breakatwhitespace=false,         
-	breaklines=true,                 
-	keepspaces=true,                 
-	numbers=left,                    
-	numbersep=5pt,                  
-	showspaces=false,                
-	showstringspaces=false,
-	showtabs=false,                  
-	tabsize=2,
-	frame=single
+    basicstyle=\fontfamily{phv}\selectfont\footnotesize,
+    commentstyle=\color{codegray},
+    keywordstyle=\bfseries,
+    stringstyle=\normalfont,
+    numbers=none,
+    breakatwhitespace=false,
+    breaklines=true,
+    keepspaces=false,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=tb,
+    captionpos=t
 }
 
 \lstset{style=mystyle}
+
+\lstset{
+    inputencoding=utf8,
+    extendedchars=true,
+    literate=
+        {á}{{\'a}}1
+        {é}{{\'e}}1
+        {í}{{\'i}}1
+        {ó}{{\'o}}1
+        {ú}{{\'u}}1
+        {ã}{{\~a}}1
+        {õ}{{\~o}}1
+        {â}{{\^a}}1
+        {ê}{{\^e}}1
+        {ô}{{\^o}}1
+        {ç}{{\c{c}}}1
+}
+
+\lstdefinelanguage{Rust}{
+    keywords={
+        as, break, const, continue, crate, else, enum, extern, false,
+        fn, for, if, impl, in, let, loop, match, mod, move, mut, pub,
+        ref, return, self, Self, static, struct, super, trait, true,
+        type, unsafe, use, where, while, async, await, dyn
+    },
+    sensitive=true,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+}
 
 \renewcommand{\backrefpagesname}{Citado na(s) página(s):~} % configurações do pacote backref, usado sem a opção hyperpageref de backref
 \renewcommand{\backref}{} % texto padrão antes do número das páginas
@@ -101,8 +125,8 @@ abnt-repeated-author-omit = no
 \renewcommand{\rmdefault}{phv} % arial
 \renewcommand{\sfdefault}{phv} % arial
 
-% \renewcommand{\lstlistingname}{Código} % formatação de código fonte
-% \renewcommand{\lstlistlistingname}{Lista de códigos}
+\renewcommand{\lstlistingname}{Algoritmo} % formatação de código fonte
+\renewcommand{\lstlistlistingname}{Lista de algoritmos}
 
 \input{content/capa}
 \tipotrabalho{Trabalho de Conclusão de Curso}
