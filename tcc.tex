@@ -110,6 +110,21 @@ abnt-repeated-author-omit = no
     morestring=[b]",
 }
 
+\lstdefinelanguage{JavaScript}{
+    keywords={
+        var, let, const, function, return, if, else, for, while, do,
+        break, continue, switch, case, default, new, delete, typeof,
+        instanceof, in, of, this, class, extends, super, import, export,
+        from, async, await, true, false, null, undefined, try, catch,
+        finally, throw
+    },
+    sensitive=true,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[b]',
+}
+
 \renewcommand{\backrefpagesname}{Citado na(s) página(s):~} % configurações do pacote backref, usado sem a opção hyperpageref de backref
 \renewcommand{\backref}{} % texto padrão antes do número das páginas
 \renewcommand*{\backrefalt}[4]{ % define os textos da citação

@@ -141,6 +141,49 @@ O processo de transformar código Rust em um módulo WebAssembly é direto e bem
 
 O wasm-pack é a principal ferramenta para esse processo no ecossistema Rust. Ela cuida de compilar o código, gerar os arquivos de integração com JavaScript e empacotar tudo em um formato pronto para ser publicado ou importado por uma aplicação \emph{web}. Por baixo, o compilador Rust utiliza o \emph{backend} LLVM para gerar o binário .wasm, o mesmo \emph{backend} responsável pelas otimizações que tornam o código Rust tão eficiente em ambiente nativo \cite{moric2022}.
 
+\begin{lstlisting}[
+    language=Rust,
+    caption={Função Rust exportada para WebAssembly com \emph{wasm-bindgen}},
+    label={lst:wasm-export}
+]
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn fibonacci(n: u32) -> u64 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => {
+            let (mut a, mut b) = (0u64, 1u64);
+            for _ in 2..=n {
+                let temp = a + b;
+                a = b;
+                b = temp;
+            }
+            b
+        }
+    }
+}
+\end{lstlisting}
+
+A macro \texttt{\#[wasm\_bindgen]} gera automaticamente o código de ligação (\emph{bindings}) necessário para que essa função seja chamada a partir do JavaScript, como mostra o Código~\ref{lst:wasm-call}.
+
+\begin{lstlisting}[
+    language=JavaScript,
+    caption={Chamada da função Rust compilada para Wasm a partir do JavaScript},
+    label={lst:wasm-call}
+]
+import init, { fibonacci } from "./pkg/meu_projeto.js";
+
+async function executar() {
+    await init(); // carrega e instancia o módulo .wasm
+    const resultado = fibonacci(30);
+    console.log(resultado);
+}
+
+executar();
+\end{lstlisting}
+
 Vale destacar que nem todo código Rust compila para WebAssembly sem adaptações. Funcionalidades que dependem diretamente do sistema operacional, como acesso a arquivos ou criação de \emph{threads}, não estão disponíveis no ambiente do navegador por padrão.
 
 \section{ESTUDOS COMPARATIVOS DE DESEMPENHO}
@@ -174,5 +217,21 @@ Esse modelo elimina tanto o trabalho manual de liberar memória, que em C freque
 \subsection{WebAssembly: Desempenho Frente ao JavaScript e à Execução Nativa}
 
 Dentro do ambiente do navegador, o WebAssembly já representa um avanço considerável em relação ao JavaScript. Em tarefas computacionais intensas, o WebAssembly supera o JavaScript, sendo em média 1,3 vezes mais rápido que o JavaScript tradicional, seu antecessor mais próximo \cite{jangda2019}. No entanto, há uma ressalva importante: transferir dados complexos para dentro da memória do módulo tem um custo. Para passar uma \emph{string} ao Wasm, por exemplo, é necessário codificá-la, localizar espaço livre na memória linear e escrevê-la \emph{byte} a \emph{byte}, um processo que pode anular o ganho de desempenho em operações simples com texto. Quando o dado já está na memória ou o algoritmo é suficientemente complexo, o Wasm volta a superar o JavaScript por ampla margem \cite{moric2022}.
+
+\begin{lstlisting}[
+    language=Rust,
+    caption={Função que recebe uma \emph{string} do JavaScript, evidenciando o custo de transferência de dados complexos para a memória linear do Wasm},
+    label={lst:wasm-string}
+]
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn contar_vogais(texto: &str) -> u32 {
+    texto
+        .chars()
+        .filter(|c| "aeiouAEIOU".contains(*c))
+        .count() as u32
+}
+\end{lstlisting}
 
 Contudo, a comparação mais relevante para este trabalho não é entre WebAssembly e JavaScript, mas entre WebAssembly e a execução nativa do próprio Rust. Nesse confronto, o cenário é diferente. Estudos mostram que aplicações compiladas para WebAssembly são executadas, em média, entre 45\% e 55\% mais devagar do que o equivalente nativo, a depender do navegador utilizado \cite{jangda2019}. Esse é exatamente o \emph{gap} que este trabalho busca caracterizar no contexto específico de aplicações Rust, contribuindo com dados concretos para orientar decisões sobre quando a portabilidade do Wasm justifica a perda de desempenho em relação à execução nativa.
