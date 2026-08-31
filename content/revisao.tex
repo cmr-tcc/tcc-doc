@@ -12,6 +12,8 @@ Se o desempenho de Rust já se mostra expressivo, é na segurança que a linguag
 
 O conceito é baseado em um princípio: cada valor em Rust tem um único dono, responsável por seu gerenciamento. Quando o proprietário deixa de existir ou sai de escopo, o valor associado é automaticamente desalocado da memória. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por hackers.
 
+O Algoritmo 1 apresenta um exemplo do funcionamento do \emph{ownership}. Inicialmente, a variável nome é proprietária de uma String. Quando essa variável é atribuída a linguagem, a propriedade do valor é transferida, caracterizando uma operação de \emph{move}. A partir desse momento, nome deixa de ser uma variável válida para acessar o valor, enquanto linguagem passa a ser sua proprietária.
+
 \begin{lstlisting}[
     language=Rust,
     caption={Exemplo de \emph{ownership}: cada valor tem um único dono},
@@ -29,9 +31,11 @@ fn main() {
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
+A tentativa de utilizar nome após a transferência de propriedade resulta em erro de compilação, pois o valor já pertence à variável linguagem. Dessa forma, o compilador impede que uma variável continue sendo utilizada como se ainda fosse proprietária de um recurso que já foi transferido.
 
-Essa regra é verificada pelo compilador e impede um tipo de erro muito difícil de depurar chamado condição de corrida (\emph{data race}), que acontece quando duas partes do programa tentam modificar o mesmo dado ao mesmo tempo. 
+Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). Nesse mecanismo, uma parte do código pode acessar temporariamente um valor pertencente a outra parte sem assumir sua propriedade. As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
+
+O Algoritmo 2 demonstra uma situação em que essas regras são violadas. Inicialmente, é criada uma referência imutável para valores. Em seguida, o código tenta criar uma referência mutável para o mesmo valor. Como a referência imutável ainda está ativa, o compilador identifica o conflito entre os dois tipos de empréstimo.
 
 \begin{lstlisting}[
     language=Rust,
@@ -39,22 +43,31 @@ Essa regra é verificada pelo compilador e impede um tipo de erro muito difícil
     label={alg:borrowing-wrong}
 ]
 fn processar_dados() {
-    let mut dados = String::from("exemplo");
-
-    // Cria uma referência mutável
-    let ref_mut = &mut dados;
-    ref_mut.push_str("modificado");
-
-    // Tenta criar referência imutável enquanto ref_mut existe
-    let ref_imut = &dados;
-
-    println!("{}", ref_mut);
-    println!("{}", ref_imut);
+    // Declara uma String que pode ser modificada. 
+    let mut valores = String::from("Rust"); 
+    
+    // Cria uma referência imutável para o valor. 
+    let leitura = &valores; 
+    
+    // Tenta criar uma referência mutável para o mesmo valor 
+    // enquanto a referência imutável ainda está ativa. 
+    let alteracao = &mut valores; 
+    
+    // Utiliza a referência imutável. 
+    println!("Conteúdo: {}", leitura); 
+    
+    // Tenta modificar o valor por meio da referência mutável. 
+    alteracao.push_str(" é seguro"); 
+    
+    // Exibe o valor após a alteração. 
+    println!("Resultado: {}", alteracao);
 }
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-O compilador rejeita esse código antes de executar. A solução é garantir que as referências não se sobreponham.
+O código apresentado no Algoritmo 2 é rejeitado pelo compilador antes de sua execução. O erro ocorre porque valores não pode ser emprestado de forma mutável enquanto permanece emprestado de forma imutável. Essa restrição evita que diferentes partes do programa tenham, simultaneamente, permissões incompatíveis sobre o mesmo dado.
+
+A solução consiste em garantir que os empréstimos não se sobreponham. Para demonstrar essa situação, o Algoritmo 3 utiliza um escopo interno para limitar a duração da referência imutável. Enquanto o bloco interno está em execução, leitura pode acessar valores. Ao final desse bloco, a referência deixa de estar ativa, permitindo que uma referência mutável seja criada posteriormente.
 
 \begin{lstlisting}[
     language=Rust,
@@ -62,39 +75,56 @@ O compilador rejeita esse código antes de executar. A solução é garantir que
     label={alg:borrowing-correct}
 ]
 fn main() {
-    let mut valor = String::from("dados");
-
-    {
-        let leitura = &valor;
-        println!("Lendo: {}", leitura);
-    } // 'leitura' termina aqui
-
-    // Agora é seguro criar uma referência mutável
-    let modificacao = &mut valor;
-    modificacao.push_str(" modificados");
-    println!("Novo valor: {}", modificacao);
+    // Declara uma String que pode ser modificada. 
+    let mut valores = String::from("Rust"); 
+    
+    { 
+        // Cria e utiliza uma referência imutável para o valor. 
+        let leitura = &valores;
+        println!("Conteúdo: {}", leitura);
+    } // A referência imutável deixa de existir neste ponto. 
+    
+    // Agora é seguro criar uma referência mutável, 
+    // pois não há mais uma referência imutável ativa. 
+    let alteracao = &mut valores; 
+    alteracao.push_str(" é seguro"); 
+    
+    println!("Resultado: {}", alteracao);
 }
 \end{lstlisting}
 \fontealgoritmo{Os autores}
+
+Diferentemente do Algoritmo 2, o Algoritmo 3 é compilado e executado normalmente, pois a referência imutável leitura deixa de existir antes da criação da referência mutável alteracao. Nesse caso, o valor pode primeiro ser consultado e, posteriormente, modificado, sem que haja sobreposição entre os empréstimos.
+
+Essa regra é verificada pelo compilador e contribui para impedir um tipo de erro difícil de depurar chamado condição de corrida (\emph{data race}), que ocorre quando diferentes partes de um programa tentam acessar e modificar simultaneamente uma mesma região de memória sem mecanismos adequados de sincronização (Bugden; Alahmar, 2022).
 
 Outro ponto importante é que Rust não permite manipular endereços de memória diretamente fora de contextos explicitamente marcados como \emph{unsafe}. Na prática, isso significa que todo acesso a listas e \emph{arrays} é verificado automaticamente: se o programa tentar acessar uma posição inexistente, ele encerra de forma controlada em vez de continuar operando com dados corrompidos ou expondo informações que não deveria \cite{bugden2022}. Esse tipo de proteção teria evitado o Heartbleed, uma das maiores vulnerabilidades da história da internet, que afetou uma parcela expressiva dos maiores sites HTTPS do mundo ao permitir que dados fossem lidos além dos limites permitidos da memória.
 
+O Algoritmo 4 exemplifica esse mecanismo por meio de um vetor contendo três elementos. Como os índices válidos são 0, 1 e 2, a tentativa de acessar a posição 5 representa um acesso fora dos limites. Nesse caso, o Rust detecta a condição e interrompe a execução por meio de um \emph{panic}.
+
 \begin{lstlisting}[
     language=Rust,
-    caption={Acesso fora dos limites com encerramento seguro},
+    caption={Acesso fora dos limites e encerramento por panic},
     label={alg:unsafe-array}
 ]
 fn main() {
-    let numeros = vec![10, 20, 30];
-    // O vetor tem 3 posições (índices 0, 1 e 2).
-    // Tentar acessar o índice 5 não expõe memória indevida:
-    // o programa encerra com uma mensagem de erro clara.
-    println!("{}", numeros[5]); // panic: index out of bounds
+    // Cria um vetor contendo três elementos. 
+    let numeros = vec![10, 20, 30]; 
+    
+    // Os índices válidos do vetor são 0, 1 e 2. 
+    // O índice 5 não existe, pois está fora dos limites do vetor. 
+    // O Rust detecta o acesso inválido durante a execução 
+    // e encerra o programa por meio de um panic. 
+    println!("{}", numeros[5]); // erro: index out of bounds
 }
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-Por fim, Rust também elimina o conceito de ponteiro nulo, aquele valor que representa "nada"~e que em C e C++ frequentemente causa travamentos silenciosos. No lugar, Rust usa o tipo Option, que obriga o programador a decidir explicitamente o que fazer quando um valor pode não existir \cite{bugden2022}.
+Ao executar o Algoritmo 4, a compilação é realizada normalmente, mas a execução é interrompida quando o acesso ao índice inexistente é realizado. O sistema apresenta uma mensagem indicando que o vetor possui comprimento 3, enquanto o índice solicitado é 5. Esse comportamento demonstra que o Rust realiza a verificação do limite durante a execução da operação de indexação, impedindo que o acesso inválido prossiga silenciosamente.
+
+Por fim, Rust também elimina o conceito de ponteiro nulo, aquele valor que representa "nada"~e que em C e C++ frequentemente causa travamentos silenciosos. No lugar, Rust usa o tipo \emph{Option}, que obriga o programador a decidir explicitamente o que fazer quando um valor pode não existir \cite{bugden2022}.
+
+O Algoritmo 5 demonstra essa abordagem por meio de uma função responsável por buscar um nome a partir de um identificador. A função retorna \texttt{Some} quando encontra um valor correspondente e \texttt{None} quando nenhum valor é encontrado. Dessa maneira, a possibilidade de ausência do resultado é representada diretamente pelo tipo de retorno da função.
 
 \begin{lstlisting}[
     language=Rust,
@@ -102,23 +132,33 @@ Por fim, Rust também elimina o conceito de ponteiro nulo, aquele valor que repr
     label={alg:option-type}
 ]
 fn buscar_nome(id: u32) -> Option<String> {
-    if id == 1 {
-        Some(String::from("Olá, Mundo"))
-    } else {
-        None // sem ponteiro nulo, sem crash silencioso
+    // Retorna um nome quando o identificador corresponde a um usuário. 
+    if id == 1 { 
+        Some(String::from("Olá, Mundo")) 
+    } else { 
+        // Indica que nenhum valor foi encontrado. 
+        None 
     }
 }
 
 fn main() {
+    // Realiza uma busca utilizando um identificador que não existe.
     match buscar_nome(2) {
+        // Executado quando a busca retorna um valor.
         Some(nome) => println!("Encontrado: {}", nome),
+
+        // Executado quando nenhum valor é encontrado.
         None => println!("Nenhum usuário com esse id"),
     }
 }
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
+No exemplo apresentado, a chamada \texttt{buscar\_nome(2)} retorna \texttt{None}, pois o identificador informado não corresponde ao valor esperado pela função. O \texttt{match} trata explicitamente essa possibilidade e exibe a mensagem correspondente. Caso a função encontrasse um usuário, retornaria \texttt{Some(nome)}, e o primeiro ramo do \texttt{match} seria executado. Dessa forma, o código não pressupõe que o valor necessariamente exista, tornando essa possibilidade explícita na estrutura do programa.
+
 O que torna tudo isso notável é que essas verificações acontecem em tempo de compilação. Erros que em outras linguagens só aparecem quando o programa já está rodando, às vezes em produção, às vezes explorados por um hacker, em Rust são detectados antes mesmo de o programa existir \cite{bugden2022}.
+
+Nos casos apresentados nos Algoritmos 1, 2 e 3, por exemplo, as regras de \emph{ownership} e \emph{borrowing} são verificadas durante a compilação, enquanto o acesso fora dos limites demonstrado no Algoritmo 4 é detectado durante a execução por meio de um \emph{panic}. Já o Algoritmo 5 evidencia como a possibilidade de ausência de um valor pode ser representada explicitamente pelo tipo \emph{Option}.
 
 \section{WebAssembly: ambiente e características}
 
