@@ -15,7 +15,7 @@ O conceito é baseado em um princípio: cada valor em Rust tem um único dono, r
 \begin{lstlisting}[
     language=Rust,
     caption={Exemplo de \emph{ownership}: cada valor tem um único dono},
-    label={lst:borrowing}
+    label={alg:ownership}
 ]
 fn main() {
     let nome = String::from("Rust");
@@ -27,6 +27,7 @@ fn main() {
     println!("{}", linguagem); // funciona normalmente
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
 
@@ -34,8 +35,8 @@ Essa regra é verificada pelo compilador e impede um tipo de erro muito difícil
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Exemplo de violação das regras de \emph{borrowing} em Rust},
-    label={lst:borrowing}
+    caption={Violação das regras de \emph{borrowing} em Rust},
+    label={alg:borrowing-wrong}
 ]
 fn processar_dados() {
     let mut dados = String::from("exemplo");
@@ -51,13 +52,14 @@ fn processar_dados() {
     println!("{}", ref_imut);
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 O compilador rejeita esse código antes de executar. A solução é garantir que as referências não se sobreponham.
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Exemplo de \emph{borrowing} correto: referências separadas por escopo},
-    label={lst:borrowing}
+    caption={Referências separadas por escopo, \emph{borrowing} correto},
+    label={alg:borrowing-correct}
 ]
 fn main() {
     let mut valor = String::from("dados");
@@ -73,13 +75,14 @@ fn main() {
     println!("Novo valor: {}", modificacao);
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 Outro ponto importante é que Rust não permite manipular endereços de memória diretamente fora de contextos explicitamente marcados como \emph{unsafe}. Na prática, isso significa que todo acesso a listas e \emph{arrays} é verificado automaticamente: se o programa tentar acessar uma posição inexistente, ele encerra de forma controlada em vez de continuar operando com dados corrompidos ou expondo informações que não deveria \cite{bugden2022}. Esse tipo de proteção teria evitado o Heartbleed, uma das maiores vulnerabilidades da história da internet, que afetou uma parcela expressiva dos maiores sites HTTPS do mundo ao permitir que dados fossem lidos além dos limites permitidos da memória.
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Exemplo de acesso fora dos limites causa encerramento seguro},
-    label={lst:borrowing}
+    caption={Acesso fora dos limites com encerramento seguro},
+    label={alg:unsafe-array}
 ]
 fn main() {
     let numeros = vec![10, 20, 30];
@@ -89,13 +92,14 @@ fn main() {
     println!("{}", numeros[5]); // panic: index out of bounds
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 Por fim, Rust também elimina o conceito de ponteiro nulo, aquele valor que representa "nada"~e que em C e C++ frequentemente causa travamentos silenciosos. No lugar, Rust usa o tipo Option, que obriga o programador a decidir explicitamente o que fazer quando um valor pode não existir \cite{bugden2022}.
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Exemplo de \emph{Option} no lugar de ponteiro nulo},
-    label={lst:borrowing}
+    caption={Tipo \emph{Option} no lugar de ponteiro nulo},
+    label={alg:option-type}
 ]
 fn buscar_nome(id: u32) -> Option<String> {
     if id == 1 {
@@ -112,6 +116,7 @@ fn main() {
     }
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 O que torna tudo isso notável é que essas verificações acontecem em tempo de compilação. Erros que em outras linguagens só aparecem quando o programa já está rodando, às vezes em produção, às vezes explorados por um hacker, em Rust são detectados antes mesmo de o programa existir \cite{bugden2022}.
 
@@ -143,8 +148,8 @@ O wasm-pack é a principal ferramenta para esse processo no ecossistema Rust. El
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Função Rust exportada para WebAssembly com \emph{wasm-bindgen}},
-    label={lst:wasm-export}
+    caption={Função Rust exportada para WebAssembly},
+    label={alg:wasm-export}
 ]
 use wasm_bindgen::prelude::*;
 
@@ -165,13 +170,14 @@ pub fn fibonacci(n: u32) -> u64 {
     }
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
-A macro \texttt{\#[wasm\_bindgen]} gera automaticamente o código de ligação (\emph{bindings}) necessário para que essa função seja chamada a partir do JavaScript, como mostra o Código~\ref{lst:wasm-call}.
+A macro \texttt{\#[wasm\_bindgen]} gera automaticamente o código de ligação (\emph{bindings}) necessário para que essa função seja chamada a partir do JavaScript, como mostra o Algoritmo~\ref{alg:wasm-call}.
 
 \begin{lstlisting}[
     language=JavaScript,
-    caption={Chamada da função Rust compilada para Wasm a partir do JavaScript},
-    label={lst:wasm-call}
+    caption={Chamada da função Rust a partir do JavaScript},
+    label={alg:wasm-call}
 ]
 import init, { fibonacci } from "./pkg/meu_projeto.js";
 
@@ -183,6 +189,7 @@ async function executar() {
 
 executar();
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 Vale destacar que nem todo código Rust compila para WebAssembly sem adaptações. Funcionalidades que dependem diretamente do sistema operacional, como acesso a arquivos ou criação de \emph{threads}, não estão disponíveis no ambiente do navegador por padrão.
 
@@ -197,8 +204,8 @@ Rust não tem coletor de lixo. Em vez disso, o compilador analisa o código ante
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Exemplo de quando a memória é liberada automaticamente ao fim do escopo},
-    label={lst:borrowing}
+    caption={Memória liberada automaticamente ao fim do escopo},
+    label={alg:garbage-collector}
 ]
 fn main() {
     // 'mensagem' é criada aqui e pertence a este escopo
@@ -209,6 +216,7 @@ fn main() {
     // Nenhuma instrução manual é necessária.
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 Esse modelo elimina tanto o trabalho manual de liberar memória, que em C frequentemente gera erros, quanto a sobrecarga do coletor de lixo. O resultado é um programa que roda com eficiência comparável à de C e C++, mas sem exigir que o programador gerencie a memória na mão \cite{bugden2022}.
 
@@ -220,8 +228,8 @@ Dentro do ambiente do navegador, o WebAssembly já representa um avanço conside
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Função que recebe uma \emph{string} do JavaScript, evidenciando o custo de transferência de dados complexos para a memória linear do Wasm},
-    label={lst:wasm-string}
+    caption={Função Rust em Wasm recebendo \emph{string} do JavaScript},
+    label={alg:string-transfer}
 ]
 use wasm_bindgen::prelude::*;
 
@@ -233,5 +241,6 @@ pub fn contar_vogais(texto: &str) -> u32 {
         .count() as u32
 }
 \end{lstlisting}
+\fontealgoritmo{Os autores}
 
 Contudo, a comparação mais relevante para este trabalho não é entre WebAssembly e JavaScript, mas entre WebAssembly e a execução nativa do próprio Rust. Nesse confronto, o cenário é diferente. Estudos mostram que aplicações compiladas para WebAssembly são executadas, em média, entre 45\% e 55\% mais devagar do que o equivalente nativo, a depender do navegador utilizado \cite{jangda2019}. Esse é exatamente o \emph{gap} que este trabalho busca caracterizar no contexto específico de aplicações Rust, contribuindo com dados concretos para orientar decisões sobre quando a portabilidade do Wasm justifica a perda de desempenho em relação à execução nativa.

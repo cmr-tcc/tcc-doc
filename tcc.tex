@@ -25,6 +25,13 @@ brazil % último idioma é o principal do documento
 \usepackage{lscape}
 \usepackage{longtable}	
 \usepackage{listings}
+
+\AtBeginDocument{%
+  \counterwithout{lstlisting}{chapter}% remove chapter binding
+  \renewcommand{\thelstlisting}{\arabic{lstlisting}}% show 1,2,3...
+  \setcounter{lstlisting}{0}% first one becomes 1
+}
+
 \usepackage{gantt}
 \usepackage{xcolor}
 \usepackage[bottom=2cm,top=3cm,left=3cm,right=2cm]{geometry}
@@ -60,6 +67,24 @@ abnt-repeated-author-omit = no
 \setlength\afterchapskip{\lineskip}
 
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\newcommand{\fontealgoritmo}[1]{%
+    \begingroup
+    \captionsetup{
+        justification=raggedright,
+        singlelinecheck=false,
+        skip=0pt
+    }
+    \setlength{\abovecaptionskip}{-5pt}
+    \fonte{#1}
+    \addvspace{1.0\baselineskip}
+    \endgroup
+}
+
+\captionsetup[lstlisting]{
+    justification=raggedright,
+    singlelinecheck=false
+}
 
 \lstdefinestyle{mystyle}{
     basicstyle=\fontfamily{phv}\selectfont\footnotesize,
@@ -199,7 +224,7 @@ abnt-repeated-author-omit = no
 \makeindex % compila o índice
 
 % lista de códigos
-% \newlistof{lstlistoflistings}{lol}{\lstlistlistingname}
+\newlistof{lstlistoflistings}{lol}{\lstlistlistingname}
 
 \begin{document}
 	\selectlanguage{brazil}
@@ -237,6 +262,14 @@ abnt-repeated-author-omit = no
 	% lista de tabelas
 	\pdfbookmark[0]{\listtablename}{lot}
 	\listoftables*
+	\cleardoublepage
+
+	% lista de algoritmos
+	\pdfbookmark[0]{\lstlistlistingname}{lol}
+	\begingroup
+	\renewcommand{\numberline}[2]{\hspace*{-1.4em}\lstlistingname~#1\quad–\quad#2}
+	\lstlistoflistings*
+	\endgroup
 	\cleardoublepage
 
 	% lista de siglas
