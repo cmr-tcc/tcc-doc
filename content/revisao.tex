@@ -12,7 +12,7 @@ Se o desempenho de Rust já se mostra expressivo, é na segurança que a linguag
 
 O conceito é baseado em um princípio: cada valor em Rust tem um único dono, responsável por seu gerenciamento. Quando o proprietário deixa de existir ou sai de escopo, o valor associado é automaticamente desalocado da memória. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por hackers.
 
-O Algoritmo 1 apresenta um exemplo do funcionamento do \emph{ownership}. Inicialmente, a variável nome é proprietária de uma String. Quando essa variável é atribuída a linguagem, a propriedade do valor é transferida, caracterizando uma operação de \emph{move}. A partir desse momento, nome deixa de ser uma variável válida para acessar o valor, enquanto linguagem passa a ser sua proprietária.
+O Algoritmo 1 apresenta um exemplo do funcionamento do \emph{ownership}. Inicialmente, a variável nome é proprietária de uma String. Quando essa variável é atribuída a linguagem, a propriedade do valor é transferida, caracterizando uma operação de \emph{move}. A partir desse momento, "nome"~deixa de ser uma variável válida para acessar o valor, enquanto "linguagem"~passa a ser sua proprietária.
 
 \begin{lstlisting}[
     language=Rust,
@@ -31,7 +31,7 @@ fn main() {
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-A tentativa de utilizar nome após a transferência de propriedade resulta em erro de compilação, pois o valor já pertence à variável linguagem. Dessa forma, o compilador impede que uma variável continue sendo utilizada como se ainda fosse proprietária de um recurso que já foi transferido.
+A tentativa de utilizar "nome"~após a transferência de propriedade resulta em erro de compilação, pois o valor já pertence à variável "linguagem". Dessa forma, o compilador impede que uma variável continue sendo utilizada como se ainda fosse proprietária de um recurso que já foi transferido.
 
 Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). Nesse mecanismo, uma parte do código pode acessar temporariamente um valor pertencente a outra parte sem assumir sua propriedade. As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
 
@@ -68,7 +68,7 @@ fn processar_dados() {
 
 O código apresentado no Algoritmo 2 é rejeitado pelo compilador antes de sua execução. O erro ocorre porque valores não pode ser emprestado de forma mutável enquanto permanece emprestado de forma imutável. Essa restrição evita que diferentes partes do programa tenham, simultaneamente, permissões incompatíveis sobre o mesmo dado.
 
-A solução consiste em garantir que os empréstimos não se sobreponham. Para demonstrar essa situação, o Algoritmo 3 utiliza um escopo interno para limitar a duração da referência imutável. Enquanto o bloco interno está em execução, leitura pode acessar valores. Ao final desse bloco, a referência deixa de estar ativa, permitindo que uma referência mutável seja criada posteriormente.
+A solução consiste em garantir que os empréstimos não se sobreponham. Para demonstrar essa situação, o Algoritmo 3 utiliza um escopo interno para limitar a duração da referência imutável. Enquanto o bloco interno está em execução, "leitura"~pode acessar valores. Ao final desse bloco, a referência deixa de estar ativa, permitindo que uma referência mutável seja criada posteriormente.
 
 \Needspace{150\baselineskip}
 \begin{lstlisting}[
@@ -96,7 +96,7 @@ fn main() {
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-Diferentemente do Algoritmo 2, o Algoritmo 3 é compilado e executado normalmente, pois a referência imutável leitura deixa de existir antes da criação da referência mutável alteracao. Nesse caso, o valor pode primeiro ser consultado e, posteriormente, modificado, sem que haja sobreposição entre os empréstimos.
+Diferentemente do Algoritmo 2, o Algoritmo 3 é compilado e executado normalmente, pois a referência imutável "leitura"~deixa de existir antes da criação da referência mutável "alteracao". Nesse caso, o valor pode primeiro ser consultado e, posteriormente, modificado, sem que haja sobreposição entre os empréstimos.
 
 Essa regra é verificada pelo compilador e contribui para impedir um tipo de erro difícil de depurar chamado condição de corrida (\emph{data race}), que ocorre quando diferentes partes de um programa tentam acessar e modificar simultaneamente uma mesma região de memória sem mecanismos adequados de sincronização (Bugden; Alahmar, 2022).
 
@@ -270,7 +270,7 @@ fn main() {
 
 O exemplo demonstra, portanto, que a liberação da memória ocorre automaticamente ao final do escopo, sem a necessidade de uma chamada explícita para liberar o recurso.
 
-Esse modelo elimina tanto o trabalho manual de liberar memória, que em C frequentemente gera erros, quanto a sobrecarga do coletor de lixo. O resultado é um programa que roda com eficiência comparável à de C e C++, mas sem exigir que o programador gerencie a memória na mão \cite{bugden2022}.
+Esse modelo elimina tanto o trabalho manual de liberar memória, que em C frequentemente gera erros, quanto a sobrecarga do coletor de lixo. O resultado é um programa que roda com eficiência comparável à de C e C++, mas sem exigir que o programador gerencie a memória manualmente \cite{bugden2022}.
 
 É esse nível de eficiência nativa que serve de referência para a comparação com o WebAssembly. Quando o mesmo código Rust é compilado para o formato .wasm e executado no navegador, parte dessas garantias de desempenho precisa ser reexaminada, pois o ambiente de execução impõe restrições e custos que não existem na compilação nativa.
 
