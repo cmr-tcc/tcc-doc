@@ -2,13 +2,13 @@
 
 As métricas coletadas serão analisadas com base no levantamento teórico realizado, buscando avaliar os aspectos de desempenho de maneira objetiva e fundamentada em cada cenário analisado.
 
-Para o tempo de execução, será calculada a média aritmética das dez iterações de cada algoritmo e comparado o resultado entre os dois ambientes, expressando a diferença como \emph{overhead} percentual e fator multiplicativo.
+Para o tempo de execução, será comparado o resultado entre os dois ambientes, expressando a diferença como \emph{overhead} percentual e fator multiplicativo.
 
 Para o consumo de memória, serão aplicadas as métricas de \emph{baseline}, pico e consumo líquido descritas anteriormente, a fim de isolar o consumo efetivo do algoritmo do \emph{overhead} fixo do ambiente de execução Wasm.
 
 \section{Tempo de Execução}
 
-Cada algoritmo foi executado dez vezes em sequência, e o tempo reportado corresponde à média aritmética das execuções, em milissegundos, conforme descrito na seção anterior. A Tabela~\ref{tab:tempo} apresenta os resultados obtidos, incluindo o \emph{overhead} percentual e o fator multiplicativo calculados pelas equações apresentadas.
+A Tabela~\ref{tab:tempo} apresenta os resultados obtidos, incluindo o \emph{overhead} percentual e o fator multiplicativo calculados pelas equações apresentadas.
 
 \begin{table}[!h]
     \caption{ Comparativo de tempo de execução médio (ms) }
@@ -57,7 +57,7 @@ Considerando todos os algoritmos avaliados, o \emph{overhead} médio foi de 41,2
 
 \section{Uso de Memória}
 
-O uso de memória foi coletado por meio do comando docker stats, com amostragem realizada a cada dois segundos. As métricas de \emph{baseline}, pico e consumo líquido foram calculadas conforme descrito nas seções anteriores. As Tabelas~\ref{tab:memoria-rust} e~\ref{tab:memoria-wasm} apresentam os resultados obtidos.
+As métricas de \emph{baseline}, pico e consumo líquido foram calculadas conforme descrito nas seções anteriores. As Tabelas~\ref{tab:memoria-rust} e~\ref{tab:memoria-wasm} apresentam os resultados obtidos.
 
 \begin{table}[!h]
     \caption{Consumo de memória do executável Rust (MiB)}
@@ -103,7 +103,7 @@ Dessa forma, a comparação direta entre os valores totais de memória não é a
 
 Considerando essa métrica, o Rust apresentou valores entre 40,6 MiB, observados no fannkuch-redux, e 142,6 MiB, observados no spectral-norm. Já o WebAssembly apresentou valores entre 1,2 MiB, observados no spectral-norm, e 33,6 MiB, observados no mandelbrot.
 
-O spectral-norm representa uma exceção no ambiente nativo, com consumo líquido de 142,6 MiB, mais de três vezes o dos demais algoritmos. Esse valor não decorre do uso da biblioteca Rayon, já que o fannkuch-redux e o mandelbrot também a utilizam e mantiveram consumo em torno de 40 MiB. O comportamento provavelmente resulta da combinação entre o curto tempo de execução do algoritmo, cerca de 1 segundo por iteração, e o intervalo de amostragem de 2 segundos, que reduz o número de amostras coletadas durante a execução ativa e torna a estimativa de pico mais sensível a variações pontuais. A verificação dessa hipótese, por meio da redução do intervalo de coleta ou do aumento da carga, está prevista para a versão final. 
+O spectral-norm representa uma exceção no ambiente nativo, com consumo líquido de 142,6 MiB, mais de três vezes o dos demais algoritmos. Esse valor não decorre do uso da biblioteca Rayon, já que o fannkuch-redux e o mandelbrot também a utilizam e mantiveram consumo em torno de 40 MiB. O comportamento provavelmente resulta da combinação entre o curto tempo de execução do algoritmo, cerca de 1 segundo por iteração, e o intervalo de amostragem de 2 segundos, que reduz o número de amostras coletadas durante a execução ativa e torna a estimativa de pico mais sensível a variações pontuais. A verificação dessa hipótese, por meio da redução do intervalo de coleta ou do aumento da carga, está prevista para a versão final.
 
 Esse comportamento pode ser explicado pela pré-alocação da memória linear do WebAssembly durante o carregamento da página. Como essa alocação já está contabilizada no \emph{baseline}, ela não se reflete diretamente no consumo líquido calculado durante a execução dos algoritmos.
 

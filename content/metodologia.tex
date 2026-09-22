@@ -30,7 +30,7 @@ Os seguintes algoritmos foram utilizados na implementação prática:
 
 \subsection{Configuração dos Testes}
 
-Cada algoritmo foi executado 10 vezes em sequência. Foram realizados cenários com e sem 3 execuções prévias antes da carga principal, com o objetivo de avaliar o impacto da compilação JIT e do uso de \emph{cache} para melhorar a performance. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura \ref{fig:diagrama-execucao-testes}.
+Cada algoritmo foi executado 10 vezes em sequência. Antes da coleta de métricas de cada algoritmo, ele foi executado 1 vez, com o objetivo de diminuir a influência do JIT e do \emph{cache}. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura \ref{fig:diagrama-execucao-testes}.
 
 \begin{figure}[H]
 	\centering
@@ -44,7 +44,7 @@ Cada algoritmo foi executado 10 vezes em sequência. Foram realizados cenários 
 
 Com o objetivo de isolar o ambiente de execução, foram utilizados contêineres por meio do Docker, com quantidades controladas de CPUs e memória RAM, visando aumentar a reprodutibilidade dos experimentos.
 
-Os testes foram realizados em três computadores diferentes, sendo posteriormente calculada a média dos resultados obtidos. Além disso, foram padronizadas as versões das tecnologias utilizadas em todos os computadores. A seguir, são apresentados os hardwares e os softwares utilizados.
+Os testes foram realizados em 3 computadores diferentes, sendo posteriormente calculada a média dos resultados obtidos. Além disso, foram padronizadas as versões das tecnologias utilizadas em todos os computadores. A seguir, são apresentados os hardwares e os softwares utilizados.
 
 \subsection{Hardwares}
 
@@ -94,7 +94,7 @@ Computador 3:
 
 \section{Benchmarking}
 
-Inicialmente, foi considerada a utilização de bibliotecas como Criterion e Hyperfine para a realização do \emph{benchmarking}. Entretanto, para simplificar a implementação, foram desenvolvidos \emph{scripts} responsáveis por automatizar a coleta de métricas utilizando o Docker, por meio do comando docker stats, além de código em Python para formatação e processamento dos dados coletados.
+Inicialmente, foi considerada a utilização de bibliotecas como Criterion e Hyperfine para a realização do \emph{benchmarking}. Entretanto, para simplificar a implementação, foram desenvolvidos \emph{scripts} responsáveis por automatizar a coleta de métricas dentro do contêiner Docker, além de código em Python para formatação e processamento dos dados coletados.
 
 Essa abordagem também permitiu alterar parâmetros dos testes por meio de arquivos de configuração e realizar ajustes finos, buscando reduzir ao máximo interferências externas nos resultados.
 
@@ -102,7 +102,7 @@ Essa abordagem também permitiu alterar parâmetros dos testes por meio de arqui
 
 Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo.
 
-Foi utilizado um intervalo de 2 segundos entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois do início dos testes. Além disso, o contêiner era parado e então iniciado antes de cada algoritmo para remover memória em \emph{cache}.
+Foi utilizado um intervalo de 25 milissegundos entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois de cada execução. Além disso, o contêiner era parado e então iniciado antes de cada execução para remover recursos residuais.
 
 Para a análise de desempenho temporal, o overhead percentual do WebAssembly em relação ao Rust nativo foi calculado pela equação:
 
@@ -112,7 +112,7 @@ overhead (\%) = (twasm / trust - 1) * 100
 
 Onde trust e twasm representam os tempos médios de execução em milissegundos de cada ambiente.
 
-Para a análise de memória, foram derivadas três métricas a partir das amostras coletadas. O consumo de \emph{baseline} corresponde ao mínimo entre as amostras em que a utilização de CPU era inferior a 10\%, representando o consumo do contêiner em repouso. O consumo de pico corresponde ao máximo entre as amostras com CPU acima de 80\%, representando o consumo durante a execução ativa. O consumo líquido é dado pela diferença entre pico e \emph{baseline}:
+Para a análise de memória, foram derivadas 3 métricas a partir das amostras coletadas. O consumo de \emph{baseline} corresponde ao mínimo entre as amostras em que a utilização de CPU era inferior a 10\%, representando o consumo do contêiner em repouso. O consumo de pico corresponde ao máximo entre as amostras com CPU acima de 80\%, representando o consumo durante a execução ativa. O consumo líquido é dado pela diferença entre pico e \emph{baseline}:
 
 \begin{equation}
 baseline = min\{ mi~|~cpui < 10\% \}
