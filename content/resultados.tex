@@ -109,10 +109,6 @@ Esse comportamento pode ser explicado pela pré-alocação da memória linear do
 
 \section{Síntese comparativa}
 
-Os resultados obtidos permitem identificar três padrões principais.
+Os resultados obtidos permitem identificar que o overhead do WebAssembly acompanha a complexidade do acesso à memória de cada algoritmo. Casos com acesso sequencial e previsível, como fannkuch-redux e spectral-norm, ficaram abaixo de 8\%, próximos da execução nativa. Casos com acesso irregular ou escrita intensiva, como n-body e mandelbrot, chegaram a 66\% e 110\%.
 
-\textbf{Sensibilidade ao padrão de acesso à memória:} o overhead do WebAssembly acompanha a complexidade do acesso à memória de cada algoritmo. Casos com acesso sequencial e previsível, como fannkuch-redux e spectral-norm, ficaram abaixo de 8\%, próximos da execução nativa. Casos com acesso irregular ou escrita intensiva, como n-body e mandelbrot, chegaram a 66\% e 110\%.
-
-\textbf{Custo fixo do ambiente:} o ambiente WebAssembly exige cerca de 200 MiB adicionais para manter o Chrome Headless e o Puppeteer em execução, valor praticamente constante entre os algoritmos e independente da carga processada.
-
-\textbf{Origem do custo conforme o algoritmo:} para algoritmos sequenciais, o principal custo do WebAssembly está no ambiente de execução, não na execução do algoritmo em si. Para algoritmos com acesso irregular ou escrita intensiva, há também impacto relevante no tempo de execução.
+Também o ambiente WebAssembly exige cerca de 200 MiB adicionais para manter o Chrome Headless através do Puppeteer em execução, valor praticamente constante entre os algoritmos e independente da carga processada, tornando a comparação direta com o ambiente nativo inadequada. Por esse motivo, a análise de consumo de memória foi concentrada no consumo líquido, que isolou o impacto do algoritmo em execução.
