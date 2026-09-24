@@ -8,9 +8,8 @@ Para o consumo de memória, serão aplicadas as métricas de \emph{baseline}, pi
 
 \section{Tempo de Execução}
 
-A Tabela~\ref{tab:tempo} apresenta os resultados obtidos, incluindo o \emph{overhead} percentual e o fator multiplicativo calculados pelas equações apresentadas.
-
-\begin{table}[!h]
+A Tabela ~\ref{tab:tempo} apresenta os tempos médios de execução obtidos nos ambientes Rust e WebAssembly para os cinco algoritmos avaliados, além do \emph{overhead} percentual e do fator multiplicativo calculados pelas equações apresentadas. Os resultados mostram que o \emph{overhead} variou de 2,8% a 110,0%, indicando diferenças distintas entre os algoritmos avaliados.
+\begin{table}[H]
     \caption{ Comparativo de tempo de execução médio (ms) }
     \label{tab:tempo}
     \centering
@@ -33,9 +32,9 @@ A Tabela~\ref{tab:tempo} apresenta os resultados obtidos, incluindo o \emph{over
     \fonte{Os autores}
 \end{table}
 
-A Figura~\ref{fig:grafico-tempo-benchmarking} apresenta a comparação dos tempos médios de execução obtidos para cada algoritmo nos ambientes Rust e WebAssembly.
+Os menores \emph{overheads} foram observados em fannkuch-redux e spectral-norm, com 2,8\% e 7,5\%, respectivamente. Em contraste, n-body e mandelbrot apresentaram as maiores diferenças, com 66,4\% e 110,0\%. A Figura ~\ref{fig:grafico-tempo-benchmarking} permite visualizar essas diferenças entre os tempos médios de execução nos dois ambientes.
 
-\begin{figure}[!htp]
+\begin{figure}[H]
 	\centering
 	\caption{Comparativo de tempo de execução médio}
     \label{fig:grafico-tempo-benchmarking}

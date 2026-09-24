@@ -104,26 +104,30 @@ Durante a avaliação, foram coletadas as métricas de tempo de execução, uso 
 
 Foi utilizado um intervalo de 25 milissegundos entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois de cada execução. Além disso, o contêiner era parado e então iniciado antes de cada execução para remover recursos residuais.
 
-Para a análise de desempenho temporal, o overhead percentual do WebAssembly em relação ao Rust nativo foi calculado pela equação:
+Para a análise de desempenho temporal, o \emph{overhead} percentual do WebAssembly em relação ao Rust nativo foi calculado pela Equação~\eqref{eq:overhead}:
 
 \begin{equation}
-overhead (\%) = (twasm / trust - 1) * 100
+\label{eq:overhead}
+\text{\emph{overhead}}\,(\%) = \left( \frac{t_{\text{wasm}}}{t_{\text{rust}}} - 1 \right) \times 100
 \end{equation}
 
-Onde trust e twasm representam os tempos médios de execução em milissegundos de cada ambiente.
+\noindent em que $t_{\text{rust}}$ e $t_{\text{wasm}}$ representam os tempos médios de execução, em milissegundos, de cada ambiente.
 
-Para a análise de memória, foram derivadas 3 métricas a partir das amostras coletadas. O consumo de \emph{baseline} corresponde ao mínimo entre as amostras em que a utilização de CPU era inferior a 10\%, representando o consumo do contêiner em repouso. O consumo de pico corresponde ao máximo entre as amostras com CPU acima de 80\%, representando o consumo durante a execução ativa. O consumo líquido é dado pela diferença entre pico e \emph{baseline}:
+Para a análise de memória, foram derivadas três métricas a partir das amostras coletadas, sendo $m_i$ o consumo de memória e $\mathit{cpu}_i$ a utilização de CPU na $i$-ésima amostra. O consumo de \emph{baseline} (Equação~\eqref{eq:baseline}) corresponde ao mínimo entre as amostras em que a utilização de CPU era inferior a 10\%, representando o consumo do contêiner em repouso. O consumo de pico (Equação~\eqref{eq:pico}) corresponde ao máximo entre as amostras com CPU acima de 80\%, representando o consumo durante a execução ativa. O consumo líquido é dado pela diferença entre pico e \emph{baseline} (Equação~\eqref{eq:liquido}):
 
 \begin{equation}
-baseline = min\{ mi~|~cpui < 10\% \}
+\label{eq:baseline}
+\text{\emph{baseline}} = \min \{\, m_i \mid \mathit{cpu}_i < 10\% \,\}
 \end{equation}
 
 \begin{equation}
-pico = max\{ mi~|~cpui > 80\% \}
+\label{eq:pico}
+\text{pico} = \max \{\, m_i \mid \mathit{cpu}_i > 80\% \,\}
 \end{equation}
 
 \begin{equation}
-líquido = pico - baseline
+\label{eq:liquido}
+\text{líquido} = \text{pico} - \text{\emph{baseline}}
 \end{equation}
 
 Essa distinção é necessária porque o contêiner Wasm mantém o Chrome Headless e o Puppeteer em execução permanente, elevando o \emph{baseline} a aproximadamente 200 MiB independentemente do algoritmo executado.
