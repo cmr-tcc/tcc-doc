@@ -189,7 +189,7 @@ O consumo de \emph{baseline} (Equação~\eqref{eq:baseline}) corresponde ao mín
 
 Essa distinção é necessária porque o contêiner Wasm mantém o Chrome Headless e o Puppeteer em execução permanente, elevando o \emph{baseline} a cerca de 210 MiB independentemente do algoritmo executado.
 
-Para verificar se os resultados dependiam da escolha de $k$ e $n$, as métricas de memória foram recalculadas para todos os pares formados por um valor de $k$ entre 7 e 20 (14 valores) e um valor de $n$ entre 3 e 11 (9 valores), totalizando 126 pares de parâmetros. Em todos eles, o consumo líquido médio variou no máximo 1,6 MiB em relação aos valores adotados ($k = 8$ e $n = 10$), e as conclusões apresentadas no Capítulo~\ref{cap:resultados} se mantiveram. Valores de $k$ menores que 7 ou de $n$ maiores que 11 passam a incluir o período de carregamento do navegador, no qual a memória ainda está em crescimento, e por isso não foram considerados.
+Para verificar se os resultados dependiam da escolha de $k$ e $n$, as métricas de memória foram recalculadas para todos os pares formados por um valor de $k$ entre 7 e 20 (14 valores) e um valor de $n$ entre 3 e 11 (9 valores), totalizando 126 pares de parâmetros. Em todos eles, o consumo líquido médio variou no máximo 1,6 MiB em relação aos valores adotados ($k = 8$ e $n = 10$). Valores de $k$ menores que 7 ou de $n$ maiores que 11 passam a incluir o período de carregamento do navegador, no qual a memória ainda está em crescimento, e por isso não foram considerados.
 
 \subsection{Consolidação dos resultados}
 
