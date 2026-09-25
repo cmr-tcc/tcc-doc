@@ -30,7 +30,7 @@ Os seguintes algoritmos foram utilizados na implementação prática:
 
 \subsection{Configuração dos Testes}
 
-Cada algoritmo foi executado 10 vezes em sequência. Antes da coleta de métricas de cada algoritmo, ele foi executado 1 vez, com o objetivo de diminuir a influência do JIT e do \emph{cache}. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura \ref{fig:diagrama-execucao-testes}.
+Cada algoritmo foi executado 10 vezes em sequência. Antes da coleta de métricas de cada algoritmo, ele foi executado 1 vez, com o objetivo de diminuir a influência do JIT e do \emph{cache}. Os algoritmos foram executados com uma única \emph{thread} nos dois ambientes, limitando a biblioteca Rayon por meio da variável de ambiente RAYON\_NUM\_THREADS, pois o processamento paralelo no WebAssembly exige a biblioteca wasm-bindgen-rayon, que não pôde ser compilada no ambiente de testes. Dessa forma, os dois ambientes executaram a mesma carga em condições equivalentes. A parametrização dos algoritmos foi a mesma usada nos testes de desempenho do site The Computer Language Benchmarks Game \cite{bench2026}. O fluxo de execução dos testes e coleta de métricas dos algoritmos é ilustrado na Figura \ref{fig:diagrama-execucao-testes}.
 
 \begin{figure}[!htb]
 	\centering
@@ -88,6 +88,7 @@ Computador 3:
     \item wasm-bindgen: 0.2.121;
 	\item Rayon: 1.8;
 	\item Puppeteer: 24.43.1;
+	\item Google Chrome (modo \emph{headless}): 148.0.7778.97;
 	\item Node.js: v24;
 	\item npm: 10.9.4.
 \end{itemize}
