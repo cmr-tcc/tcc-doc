@@ -116,3 +116,13 @@ De modo geral, o consumo líquido do WebAssembly foi maior que o do Rust nativo 
 Os resultados mostram que o Rust nativo foi mais rápido em todos os algoritmos e que o \emph{overhead} do WebAssembly variou de forma expressiva conforme o algoritmo. Fannkuch-redux, spectral-norm e fasta ficaram entre 10,9\% e 21,2\%, enquanto n-body e mandelbrot chegaram a 69,2\% e 126,9\%, separação que se manteve nos três computadores.
 
 Também o ambiente WebAssembly exige cerca de 200 MiB adicionais para manter o Chrome Headless através do Puppeteer em execução, valor praticamente constante entre os algoritmos e independente da carga processada, tornando a comparação direta com o ambiente nativo inadequada. Por esse motivo, a análise de consumo de memória foi concentrada no consumo líquido, que isolou o impacto do algoritmo em execução. Por essa métrica, os dois ambientes apresentaram consumo reduzido na maioria dos algoritmos, com o WebAssembly ligeiramente acima do Rust nativo, e o maior consumo em ambos foi o do mandelbrot, determinado pelo tamanho do \emph{buffer} de saída.
+
+\section{Limitações do estudo}
+
+Há limitações que devem ser consideradas neste estudo:
+
+\begin{itemize}
+    \item Nos testes realizados, a variável de ambiente \texttt{RAYON\_NUM\_THREADS} foi fixada em 1, restringindo a execução de algoritmos que utilizam a biblioteca \emph{Rayon} a uma única \emph{thread}, mesmo naqueles casos em que o processamento paralelo poderia representar ganhos de desempenho. Essa restrição foi necessária em razão de erros encontrados na compilação da biblioteca \emph{wasm-bindgen-rayon} para o ambiente WebAssembly, e foi replicada no ambiente Rust nativo para manter a padronização entre as comparações.
+    \item Estudos futuros poderiam empregar ambientes de execução WebAssembly independentes de navegador, como \emph{Wasmer} e \emph{Wasmtime}, permitindo isolar de forma mais precisa o desempenho do código WebAssembly.
+    \item A avaliação do ambiente WebAssembly limitou-se ao navegador Google Chrome, controlado por meio do Puppeteer, o que restringe a generalização dos resultados obtidos. Diferentes navegadores utilizam motores de execução WebAssembly distintos, cada um com estratégias próprias de otimização, o que pode alterar significativamente os resultados de desempenho.
+\end{itemize}
