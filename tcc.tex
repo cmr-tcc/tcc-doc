@@ -306,24 +306,24 @@ abnt-repeated-author-omit = no
 	\bibliography{referencias}
 
 % apêndices
-% \begin{apendicesenv}
+\begin{apendicesenv}
 	
-% 	\renewcommand{\thetable}{\Alph{chapter}\arabic{table}}
-% 	\setcounter{table}{0}
-% 	\clearpage
-% 		\begingroup
-% 		\makeatletter
-% 		\let\clearpage\relax
-% 		\vspace*{\fill}
-% 		\vspace*{\dimexpr-50\p@-\baselineskip}
-% 		\chapter{Análise Estatística}
-% 		\vspace*{\fill}
-% 		\endgroup 
-% 	\clearpage
+	\renewcommand{\thetable}{\Alph{chapter}\arabic{table}}
+	\setcounter{table}{0}
+	\clearpage
+		\begingroup
+		\makeatletter
+		\let\clearpage\relax
+		\vspace*{\fill}
+		\vspace*{\dimexpr-50\p@-\baselineskip}
+		\chapter{Resultados por computador}\label{ap:resultados-computador}
+		\vspace*{\fill}
+		\endgroup 
+	\clearpage
 	
-% 	\lipsum[50]
+	\input{content/apendices}
 	
-% \end{apendicesenv}
+\end{apendicesenv}
 
 % anexos
 % \begin{anexosenv}

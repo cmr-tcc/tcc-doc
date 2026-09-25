@@ -41,6 +41,7 @@ Cada algoritmo foi executado 10 vezes em sequência. Antes da coleta de métrica
 \end{figure}
 
 \section{Ambiente de teste}
+\label{sec:ambiente-teste}
 
 Com o objetivo de isolar o ambiente de execução, foram utilizados contêineres por meio do Docker, com quantidades controladas de CPUs e memória RAM, limitadas a dois núcleos de processamento e 2 GB de memória, visando aumentar a reprodutibilidade dos experimentos.
 
@@ -194,7 +195,7 @@ Os procedimentos anteriores foram aplicados separadamente aos dados de cada comp
 \bar{x} = \frac{1}{K} \sum_{j=1}^{K} x_j
 \end{equation}
 
-\noindent em que $x_j$ representa o valor obtido no $j$-ésimo computador para o tempo médio de execução (Equação~\eqref{eq:tempo-medio}) ou para as métricas de \emph{baseline}, pico e consumo líquido (Equações~\eqref{eq:baseline} a~\eqref{eq:liquido}). O \emph{overhead} e o fator multiplicativo de cada algoritmo foram calculados a partir dos tempos médios consolidados, aplicando-se as Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a $\bar{t}_{\text{rust}}$ e $\bar{t}_{\text{wasm}}$.
+\noindent em que $x_j$ representa o valor obtido no $j$-ésimo computador para o tempo médio de execução (Equação~\eqref{eq:tempo-medio}) ou para as métricas de \emph{baseline}, pico e consumo líquido (Equações~\eqref{eq:baseline} a~\eqref{eq:liquido}). O \emph{overhead} e o fator multiplicativo de cada algoritmo foram calculados a partir dos tempos médios consolidados, aplicando-se as Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a $\bar{t}_{\text{rust}}$ e $\bar{t}_{\text{wasm}}$. Para analisar a variação entre os computadores, o \emph{overhead} também foi calculado separadamente para cada um, aplicando-se a Equação~\eqref{eq:overhead} aos seus próprios tempos médios. Os resultados de cada computador são apresentados no Apêndice~\ref{ap:resultados-computador}.
 
 Por fim, para sintetizar o comportamento geral, foram calculadas a média e a mediana do \emph{overhead} entre os $A = 5$ algoritmos avaliados. A média foi obtida pela Equação~\eqref{eq:media-overhead}, e a mediana corresponde ao valor central do conjunto de \emph{overheads} ordenado de forma crescente, conforme a Equação~\eqref{eq:mediana-overhead}:
 
