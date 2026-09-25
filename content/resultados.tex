@@ -7,6 +7,8 @@ Para o tempo de execução, foi comparado o resultado entre os dois ambientes, e
 
 Para o consumo de memória, foram aplicadas as métricas de \emph{baseline}, pico e consumo líquido descritas anteriormente, a fim de isolar o consumo efetivo do algoritmo do \emph{overhead} fixo do ambiente de execução Wasm.
 
+A utilização de CPU, embora coletada, não é apresentada como resultado, pois foi empregada apenas para identificar os períodos de execução, pelos motivos descritos na Seção~\ref{sec:consumo-memoria}.
+
 \section{Tempo de Execução}
 
 A Tabela~\ref{tab:tempo} apresenta os tempos médios de execução obtidos nos ambientes Rust e WebAssembly para os cinco algoritmos avaliados, além do \emph{overhead} percentual e do fator multiplicativo, calculados pelas Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a partir das médias dos três computadores (Equação~\eqref{eq:media-computadores}). Os resultados mostram que o \emph{overhead} variou de 10,9\% a 126,9\%, indicando diferenças distintas entre os algoritmos avaliados. Em todos os casos, o WebAssembly apresentou tempo de execução maior que o Rust nativo.
