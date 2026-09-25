@@ -100,7 +100,7 @@ Essa abordagem também permitiu alterar parâmetros dos testes por meio de arqui
 
 \subsection{Avaliação}
 
-Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo.
+Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo. Os \emph{scripts} desenvolvidos para a automação dos testes, a coleta dessas métricas e o código-fonte dos algoritmos utilizados estão disponíveis publicamente em um repositório no GitHub\footnote{Disponível em: \url{https://github.com/cmr-tcc/rust-wasm}.}.
 
 Foi utilizado um intervalo de 25 milissegundos entre as coletas de memória e CPU. Como essas métricas representam o consumo de recursos do contêiner, foram considerados fatores como o uso de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}. Para reduzir essa interferência, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois de cada execução. Além disso, o contêiner era parado e então iniciado antes de cada execução para remover recursos residuais.
 
