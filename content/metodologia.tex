@@ -4,7 +4,7 @@ A abordagem deste trabalho é quantitativa, buscando mensurar o desempenho e o c
 
 \section{PESQUISA BIBLIOGRÁFICA}
 
-Foram reunidas informações sobre Rust e WebAssembly na pesquisa bibliográfica, destacando seu contexto histórico, características técnicas e aplicabilidade. 
+Foram reunidas informações sobre Rust e WebAssembly na pesquisa bibliográfica, destacando seu contexto histórico, características técnicas e aplicabilidade.
 
 Em relação ao Rust, foram abordados tópicos como o sistema de propriedade (\emph{ownership}) e o modelo de empréstimo de valores (\emph{borrowing}). Já para o WebAssembly, destacaram-se aspectos como o gerenciamento de memória, a segurança proporcionada pela restrição de permissões e sua integração com Rust por meio da portabilidade de código utilizando ferramentas como o wasm-pack.
 
@@ -20,7 +20,7 @@ Para o WebAssembly, os algoritmos implementados em Rust foram portados utilizand
 
 Os seguintes algoritmos foram utilizados na implementação prática:
 
-\begin{itemize}	
+\begin{itemize}
     \item fannkuch-redux: foca em operações com inteiros e manipulação de \emph{arrays};
     \item n-body: realiza operações de ponto flutuante;
     \item spectral-norm: concentra-se em laços de repetição;
@@ -122,7 +122,7 @@ A utilização de CPU na $i$-ésima amostra foi calculada pela Equação~\eqref{
 \mathit{cpu}_i = \frac{u_i - u_{i-1}}{\tau_i - \tau_{i-1}} \times 100
 \end{equation}
 
-\noindent em que $u_i$ representa o tempo acumulado de CPU consumido pelo contêiner, em microssegundos, e $\tau_i$ o instante da leitura, também em microssegundos. Como o contêiner dispunha de dois núcleos, o valor pode ultrapassar 100\%, sendo que 100\% corresponde à ocupação integral de um núcleo.
+\noindent em que $u_i$ representa o tempo acumulado de CPU consumido pelo contêiner, em microssegundos, e $\tau_i$ o instante da leitura, também em microssegundos. Como o contêiner dispunha de dois núcleos, o valor pode ultrapassar 100\%.
 
 Embora coletada, a utilização de CPU não foi analisada como resultado comparativo entre os ambientes, sendo empregada apenas para separar os períodos de repouso e de execução na análise de memória, descrita na Seção~\ref{sec:consumo-memoria}. Durante a execução, a utilização média permaneceu praticamente constante entre os algoritmos em cada computador e ambiente, como no computador 1, em que variou de 107,0\% a 107,9\% no Rust e de 123,0\% a 123,9\% no Wasm, de modo que a métrica não diferenciou os algoritmos avaliados. Além disso, nas amostras do conjunto $I$, cerca de 70\% da utilização registrada para o contêiner não correspondeu a nenhum dos processos registrados individualmente, proporção obtida pela diferença entre a utilização do contêiner e a soma das utilizações dos processos, possivelmente em razão dos processos auxiliares de curta duração criados pelo próprio \emph{script} de coleta a cada leitura, o que impede separar com segurança o consumo dos ambientes avaliados da interferência do processo de medição. No computador 2, parte das amostras apresentou ainda valores negativos de CPU, conforme detalhado na Seção~\ref{sec:consumo-memoria}.
 
