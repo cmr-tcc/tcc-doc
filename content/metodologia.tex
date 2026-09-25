@@ -214,6 +214,11 @@ Por fim, para sintetizar o comportamento geral, foram calculadas a média e a me
 \tilde{o} = o_{\left(\frac{A+1}{2}\right)}
 \end{equation}
 
-\noindent em que $o_k$ representa o \emph{overhead} do $k$-ésimo algoritmo e $o_{(j)}$ o $j$-ésimo menor valor entre eles. Como $A$ é ímpar, a mediana corresponde ao terceiro menor \emph{overhead}. A mediana foi incluída por ser menos sensível a valores extremos do que a média. Os resultados de tempo, \emph{overhead} e memória foram apresentados com uma casa decimal, e o fator multiplicativo com três, de modo a preservar a correspondência entre as duas métricas, dada por $\text{fator} = 1 + \text{\emph{overhead}}/100$.
+\noindent em que $o_k$ representa o \emph{overhead} do $k$-ésimo algoritmo e $o_{(j)}$ o $j$-ésimo menor valor entre eles. Como $A$ é ímpar, a mediana corresponde ao terceiro menor \emph{overhead}. A mediana foi incluída por ser menos sensível a valores extremos do que a média. Os resultados de tempo, \emph{overhead} e memória foram apresentados com uma casa decimal, e o fator multiplicativo com três, de modo a preservar a correspondência entre as duas métricas, dada pela Equação~\eqref{eq:fator-overhead}:
+
+\begin{equation}
+\label{eq:fator-overhead}
+\text{fator} = 1 + \frac{\text{\emph{overhead}}\,(\%)}{100}
+\end{equation}
 
 O processamento dos dados foi realizado por meio de \emph{scripts} em Python desenvolvidos pelos autores.
