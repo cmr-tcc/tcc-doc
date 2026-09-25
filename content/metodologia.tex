@@ -1,6 +1,6 @@
 \chapter{Material e Métodos}
 
-A abordagem deste trabalho é quantitativa, buscando mensurar o desempenho e o consumo de recursos de diferentes algoritmos. Para isso, são adotadas as etapas de pesquisa bibliográfica, implementação prática e análise comparativa.
+A abordagem deste trabalho é quantitativa, buscando mensurar o desempenho e o consumo de recursos de diferentes algoritmos. Para isso, foram adotadas as etapas de pesquisa bibliográfica, implementação prática e análise comparativa.
 
 \section{PESQUISA BIBLIOGRÁFICA}
 
@@ -54,7 +54,7 @@ Computador 1:
     \item Sistema operacional: Ubuntu 24.04 (Noble);
     \item Kernel: Linux 6.17.0-35-generic;
     \item Processador: Intel i7 1165G7, 4 núcleos / 8 threads;
-    \item Memória RAM: 16 GB LPDDR4 (8x2 GB) 4267 Mhz;
+    \item Memória RAM: 16 GB LPDDR4 (8x2 GB) 4267 MHz;
     \item Armazenamento: SSD NVMe de 1 TB Micron MTFDHBA1T0QFD.
 \end{itemize}
 
@@ -64,7 +64,7 @@ Computador 2:
     \item Sistema operacional: Windows 11 Home Single Language 64 bits;
     \item Kernel: Windows NT 10.0;
     \item Processador: Intel Core i5-10300H, 4 núcleos / 8 threads;
-    \item Memória RAM: 8 GB DDR (8x1 GB) 3200 Mhz;
+    \item Memória RAM: 8 GB DDR (8x1 GB) 3200 MHz;
     \item Armazenamento: SSD SATA de 500 GB KINGSTON SA400S37.
 \end{itemize}
 
@@ -74,7 +74,7 @@ Computador 3:
     \item Sistema operacional: Ubuntu 22.04 (Jammy) via WSL;
     \item Kernel: Linux 6.6.114.1-microsoft-standard-WSL2;
     \item Processador: AMD Ryzen 5 5600x, 6 núcleos / 12 threads;
-    \item Memória RAM: 32 GB DDR4 (2x16 GB) 3200 Mhz;
+    \item Memória RAM: 32 GB DDR4 (2x16 GB) 3200 MHz;
     \item Armazenamento: SSD NVMe de 500 GB KINGSTON SNVS500G.
 \end{itemize}
 
@@ -178,7 +178,7 @@ O consumo de \emph{baseline} (Equação~\eqref{eq:baseline}) corresponde ao mín
 \text{líquido} = \text{pico} - \text{\emph{baseline}}
 \end{equation}
 
-Essa distinção é necessária porque o contêiner Wasm mantém o Chrome Headless e o Puppeteer em execução permanente, elevando o \emph{baseline} a aproximadamente 200 MiB independentemente do algoritmo executado.
+Essa distinção é necessária porque o contêiner Wasm mantém o Chrome Headless e o Puppeteer em execução permanente, elevando o \emph{baseline} a cerca de 210 MiB independentemente do algoritmo executado.
 
 No computador 2, que executou o Docker sobre o Windows, foram identificadas 44 amostras, de um total de 3.463, em que o relógio do contêiner retrocedeu em relação à leitura anterior, resultando em valores negativos de CPU pela Equação~\eqref{eq:cpu}. Como a leitura de memória independe do relógio, essas amostras foram mantidas no cálculo de memória, sendo apenas classificadas como não pertencentes ao período de execução. Os tempos de execução não foram afetados, pois são medidos por relógios monotônicos no próprio código de entrada.
 

@@ -113,6 +113,6 @@ De modo geral, o consumo líquido do WebAssembly foi igual ou superior ao do Rus
 
 \section{Síntese comparativa}
 
-Os resultados obtidos permitem identificar que o \emph{overhead} do WebAssembly acompanha a complexidade do acesso à memória de cada algoritmo. Casos com acesso sequencial e previsível, como fannkuch-redux e spectral-norm, ficaram próximos de 13\% ou abaixo, mais próximos da execução nativa. Casos com acesso irregular ou escrita intensiva, como n-body e mandelbrot, chegaram a 69,2\% e 126,9\%.
+Os resultados obtidos permitem identificar que o \emph{overhead} do WebAssembly acompanha a complexidade do acesso à memória de cada algoritmo. Casos com acesso sequencial e previsível, como fannkuch-redux e spectral-norm, ficaram abaixo de 13\%, próximos da execução nativa. Casos com acesso irregular ou escrita intensiva, como n-body e mandelbrot, chegaram a 69,2\% e 126,9\%.
 
 Também o ambiente WebAssembly exige cerca de 200 MiB adicionais para manter o Chrome Headless através do Puppeteer em execução, valor praticamente constante entre os algoritmos e independente da carga processada, tornando a comparação direta com o ambiente nativo inadequada. Por esse motivo, a análise de consumo de memória foi concentrada no consumo líquido, que isolou o impacto do algoritmo em execução. Por essa métrica, os dois ambientes apresentaram consumo reduzido na maioria dos algoritmos, com o WebAssembly ligeiramente acima do Rust nativo, e o maior consumo em ambos foi o do mandelbrot, determinado pelo tamanho do \emph{buffer} de saída.
