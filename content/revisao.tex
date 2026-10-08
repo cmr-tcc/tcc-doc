@@ -8,166 +8,67 @@ Rust é uma linguagem de programação de sistemas desenvolvida a partir da nece
 
 \subsection{Segurança: o Modelo de Ownership e Borrowing}
 
-Se o desempenho de Rust já se mostra expressivo, é na segurança que a linguagem realmente se destaca. Estima-se que cerca de 70\% das vulnerabilidades de segurança catalogadas pelo Microsoft Security Response Center têm origem em erros de gerenciamento de memória \cite{bugden2022}. Nesse contexto, o Rust aborda diretamente esse problema por meio de um mecanismo denominado \emph{ownership} (propriedade).
+Embora o desempenho da linguagem Rust seja expressivo, é no âmbito da segurança que suas principais características se destacam. Segundo o Microsoft Security Response Center, cerca de 70\% das vulnerabilidades que recebem CVE da Microsoft a cada ano têm origem em falhas de segurança de memória \cite{thomas2019}. O Rust enfrenta esse problema por meio de um mecanismo denominado \emph{ownership} (propriedade).
 
-O conceito é baseado em um princípio: cada valor em Rust tem um único dono, responsável por seu gerenciamento. Quando o proprietário deixa de existir ou sai de escopo, o valor associado é automaticamente desalocado da memória. Isso impede, por exemplo, que um programa tente usar um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por hackers.
+O princípio estabelece que cada valor possui um único proprietário, responsável pelo gerenciamento de seu ciclo de vida. Quando o proprietário deixa de estar em escopo, o valor correspondente é automaticamente desalocado. Isso impede, por exemplo, que o programa use um dado que já foi descartado, erro conhecido como \emph{use after free}, comum em C e frequentemente explorado por atacantes. Quando é preciso acessar um valor sem tomar sua propriedade, usa-se o \emph{borrowing} (empréstimo), que segue uma regra: ou várias partes do código leem o dado ao mesmo tempo (referências imutáveis), ou uma única parte pode modificá-lo (referência mutável), nunca as duas coisas ao mesmo tempo \cite{bugden2022}.
 
-O Algoritmo 1 apresenta um exemplo do funcionamento do \emph{ownership}. Inicialmente, a variável nome é proprietária de uma String. Quando essa variável é atribuída a linguagem, a propriedade do valor é transferida, caracterizando uma operação de \emph{move}. A partir desse momento, "nome"~deixa de ser uma variável válida para acessar o valor, enquanto "linguagem"~passa a ser sua proprietária.
+O Algoritmo~\ref{alg:ownership-borrowing} reúne os dois conceitos.
 
 \begin{lstlisting}[
     language=Rust,
-    caption={Exemplo de \emph{ownership}: cada valor tem um único dono},
-    label={alg:ownership}
+    caption={\emph{Ownership} e \emph{borrowing} em Rust},
+    label={alg:ownership-borrowing}
 ]
 fn main() {
+    // Ownership: o valor é transferido (move) para 'linguagem'.
     let nome = String::from("Rust");
-    // O ownership de 'nome' é transferido para 'linguagem'.
     let linguagem = nome;
-    // A linha abaixo causaria erro de compilação,
-    // porque 'nome' não é mais o dono do valor.
-    println!("{}", nome); // erro!
-    println!("{}", linguagem); // funciona normalmente
+    // println!("{}", nome);   // erro: 'nome' não é mais o dono
+
+    // Borrowing: empréstimo imutável seguido de empréstimo mutável.
+    let mut valores = String::from("Rust");
+    let leitura = &valores;
+    // let alteracao = &mut valores; // erro: 'leitura' ainda está ativa
+    println!("Conteúdo: {}", leitura); // último uso de 'leitura'
+
+    let alteracao = &mut valores;      // permitido: não há mais conflito
+    alteracao.push_str(" é seguro");
+    println!("{} / {}", linguagem, alteracao);
 }
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-A tentativa de utilizar "nome"~após a transferência de propriedade resulta em erro de compilação, pois o valor já pertence à variável "linguagem". Dessa forma, o compilador impede que uma variável continue sendo utilizada como se ainda fosse proprietária de um recurso que já foi transferido.
+Na primeira parte, após a transferência, \texttt{nome} deixa de ser válida e qualquer tentativa de usá-la gera erro de compilação. Na segunda, o compilador recusa a referência mutável enquanto a imutável ainda será usada, mas a aceita logo depois do último uso de \texttt{leitura}, pois os empréstimos deixam de se sobrepor. Essa verificação impede as condições de corrida (\emph{data races}), em que diferentes partes do programa acessam e modificam a mesma região de memória ao mesmo tempo sem sincronização \cite{bugden2022}.
 
-Quando há necessidade de compartilhar um valor entre diferentes partes do programa sem transferir o \emph{ownership}, existe o \emph{borrowing} (empréstimo). Nesse mecanismo, uma parte do código pode acessar temporariamente um valor pertencente a outra parte sem assumir sua propriedade. As regras são: ou várias partes do código leem o dado ao mesmo tempo, referências imutáveis, ou uma única parte pode modificá-lo, referência mutável. As duas situações nunca coexistem \cite{bugden2022}.
+Além disso, fora de blocos marcados como \emph{unsafe}, Rust não permite manipular endereços de memória diretamente, e todo acesso a vetores tem os limites verificados: um índice inexistente encerra o programa de forma controlada (\emph{panic}), em vez de ler dados que não deveria \cite{bugden2022}. A linguagem também elimina o ponteiro nulo, substituindo-o pelo tipo \emph{Option}, que obriga o programador a tratar explicitamente a ausência de um valor \cite{bugden2022}. O Algoritmo~\ref{alg:option-bounds} mostra os dois mecanismos juntos.
 
-O Algoritmo 2 demonstra uma situação em que essas regras são violadas. Inicialmente, é criada uma referência imutável para valores. Em seguida, o código tenta criar uma referência mutável para o mesmo valor. Como a referência imutável ainda está ativa, o compilador identifica o conflito entre os dois tipos de empréstimo.
-
-\Needspace{100\baselineskip} 
 \begin{lstlisting}[
     language=Rust,
-    caption={Violação das regras de \emph{borrowing} em Rust},
-    label={alg:borrowing-wrong}
-]
-fn processar_dados() {
-    // Declara uma String que pode ser modificada. 
-    let mut valores = String::from("Rust"); 
-    
-    // Cria uma referência imutável para o valor. 
-    let leitura = &valores; 
-    
-    // Tenta criar uma referência mutável para o mesmo valor 
-    // enquanto a referência imutável ainda está ativa. 
-    let alteracao = &mut valores; 
-    
-    // Utiliza a referência imutável. 
-    println!("Conteúdo: {}", leitura); 
-    
-    // Tenta modificar o valor por meio da referência mutável. 
-    alteracao.push_str(" é seguro"); 
-    
-    // Exibe o valor após a alteração. 
-    println!("Resultado: {}", alteracao);
-}
-\end{lstlisting}
-\fontealgoritmo{Os autores}
-
-O código apresentado no Algoritmo 2 é rejeitado pelo compilador antes de sua execução. O erro ocorre porque valores não pode ser emprestado de forma mutável enquanto permanece emprestado de forma imutável. Essa restrição evita que diferentes partes do programa tenham, simultaneamente, permissões incompatíveis sobre o mesmo dado.
-
-A solução consiste em garantir que os empréstimos não se sobreponham. Para demonstrar essa situação, o Algoritmo 3 utiliza um escopo interno para limitar a duração da referência imutável. Enquanto o bloco interno está em execução, "leitura"~pode acessar valores. Ao final desse bloco, a referência deixa de estar ativa, permitindo que uma referência mutável seja criada posteriormente.
-
-\Needspace{150\baselineskip}
-\begin{lstlisting}[
-    language=Rust,
-    caption={Referências separadas por escopo, \emph{borrowing} correto},
-    label={alg:borrowing-correct}
+    caption={Verificação de limites e tipo \emph{Option}},
+    label={alg:option-bounds}
 ]
 fn main() {
-    // Declara uma String que pode ser modificada. 
-    let mut valores = String::from("Rust"); 
-    
-    { 
-        // Cria e utiliza uma referência imutável para o valor. 
-        let leitura = &valores;
-        println!("Conteúdo: {}", leitura);
-    } // A referência imutável deixa de existir neste ponto. 
-    
-    // Agora é seguro criar uma referência mutável, 
-    // pois não há mais uma referência imutável ativa. 
-    let alteracao = &mut valores; 
-    alteracao.push_str(" é seguro"); 
-    
-    println!("Resultado: {}", alteracao);
-}
-\end{lstlisting}
-\fontealgoritmo{Os autores}
+    let numeros = vec![10, 20, 30]; // índices válidos: 0, 1 e 2
 
-Diferentemente do Algoritmo 2, o Algoritmo 3 é compilado e executado normalmente, pois a referência imutável "leitura"~deixa de existir antes da criação da referência mutável "alteracao". Nesse caso, o valor pode primeiro ser consultado e, posteriormente, modificado, sem que haja sobreposição entre os empréstimos.
+    // println!("{}", numeros[5]); // panic: index out of bounds
 
-Essa regra é verificada pelo compilador e contribui para impedir um tipo de erro difícil de depurar chamado condição de corrida (\emph{data race}), que ocorre quando diferentes partes de um programa tentam acessar e modificar simultaneamente uma mesma região de memória sem mecanismos adequados de sincronização (Bugden; Alahmar, 2022).
-
-Outro ponto importante é que Rust não permite manipular endereços de memória diretamente fora de contextos explicitamente marcados como \emph{unsafe}. Na prática, isso significa que todo acesso a listas e \emph{arrays} é verificado automaticamente: se o programa tentar acessar uma posição inexistente, ele encerra de forma controlada em vez de continuar operando com dados corrompidos ou expondo informações que não deveria \cite{bugden2022}. Esse tipo de proteção teria evitado o Heartbleed, uma das maiores vulnerabilidades da história da internet, que afetou uma parcela expressiva dos maiores sites HTTPS do mundo ao permitir que dados fossem lidos além dos limites permitidos da memória.
-
-O Algoritmo 4 exemplifica esse mecanismo por meio de um vetor contendo três elementos. Como os índices válidos são 0, 1 e 2, a tentativa de acessar a posição 5 representa um acesso fora dos limites. Nesse caso, o Rust detecta a condição e interrompe a execução por meio de um \emph{panic}.
-
-\begin{lstlisting}[
-    language=Rust,
-    caption={Acesso fora dos limites e encerramento por panic},
-    label={alg:unsafe-array}
-]
-fn main() {
-    // Cria um vetor contendo três elementos. 
-    let numeros = vec![10, 20, 30]; 
-    
-    // Os índices válidos do vetor são 0, 1 e 2. 
-    // O índice 5 não existe, pois está fora dos limites do vetor. 
-    // O Rust detecta o acesso inválido durante a execução 
-    // e encerra o programa por meio de um panic. 
-    println!("{}", numeros[5]); // erro: index out of bounds
-}
-\end{lstlisting}
-\fontealgoritmo{Os autores}
-
-Ao executar o Algoritmo 4, a compilação é realizada normalmente, mas a execução é interrompida quando o acesso ao índice inexistente é realizado. O sistema apresenta uma mensagem indicando que o vetor possui comprimento 3, enquanto o índice solicitado é 5. Esse comportamento demonstra que o Rust realiza a verificação do limite durante a execução da operação de indexação, impedindo que o acesso inválido prossiga silenciosamente.
-
-Por fim, Rust também elimina o conceito de ponteiro nulo, aquele valor que representa "nada"~e que em C e C++ frequentemente causa travamentos silenciosos. No lugar, Rust usa o tipo \emph{Option}, que obriga o programador a decidir explicitamente o que fazer quando um valor pode não existir \cite{bugden2022}.
-
-O Algoritmo 5 demonstra essa abordagem por meio de uma função responsável por buscar um nome a partir de um identificador. A função retorna \texttt{Some} quando encontra um valor correspondente e \texttt{None} quando nenhum valor é encontrado. Dessa maneira, a possibilidade de ausência do resultado é representada diretamente pelo tipo de retorno da função.
-
-\Needspace{150\baselineskip}
-\begin{lstlisting}[
-    language=Rust,
-    caption={Tipo \emph{Option} no lugar de ponteiro nulo},
-    label={alg:option-type}
-]
-fn buscar_nome(id: u32) -> Option<String> {
-    // Retorna um nome quando o identificador corresponde a um usuário. 
-    if id == 1 { 
-        Some(String::from("Olá, Mundo")) 
-    } else { 
-        // Indica que nenhum valor foi encontrado. 
-        None 
-    }
-}
-
-fn main() {
-    // Realiza uma busca utilizando um identificador que não existe.
-    match buscar_nome(2) {
-        // Executado quando a busca retorna um valor.
-        Some(nome) => println!("Encontrado: {}", nome),
-
-        // Executado quando nenhum valor é encontrado.
-        None => println!("Nenhum usuário com esse id"),
+    // 'get' retorna Option: Some(valor) ou None.
+    match numeros.get(5) {
+        Some(n) => println!("Valor: {}", n),
+        None => println!("Posição inexistente"),
     }
 }
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-No exemplo apresentado, a chamada \texttt{buscar\_nome(2)} retorna \texttt{None}, pois o identificador informado não corresponde ao valor esperado pela função. O \texttt{match} trata explicitamente essa possibilidade e exibe a mensagem correspondente. Caso a função encontrasse um usuário, retornaria \texttt{Some(nome)}, e o primeiro ramo do \texttt{match} seria executado. Dessa forma, o código não pressupõe que o valor necessariamente exista, tornando essa possibilidade explícita na estrutura do programa.
+O acesso direto \texttt{numeros[5]} compila, mas é interrompido em tempo de execução. Já o método \texttt{get} devolve \texttt{None}, e o \texttt{match} obriga o código a tratar esse caso, sem pressupor que o valor exista.
 
-O que torna tudo isso notável é que essas verificações acontecem em tempo de compilação. Erros que em outras linguagens só aparecem quando o programa já está rodando, às vezes em produção, às vezes explorados por um hacker, em Rust são detectados antes mesmo de o programa existir \cite{bugden2022}.
-
-Nos casos apresentados nos Algoritmos 1, 2 e 3, por exemplo, as regras de \emph{ownership} e \emph{borrowing} são verificadas durante a compilação, enquanto o acesso fora dos limites demonstrado no Algoritmo 4 é detectado durante a execução por meio de um \emph{panic}. Já o Algoritmo 5 evidencia como a possibilidade de ausência de um valor pode ser representada explicitamente pelo tipo \emph{Option}.
-
+O que torna tudo isso notável é que a maior parte dessas garantias é verificada em tempo de compilação: as regras de \emph{ownership}, \emph{borrowing} e o tratamento de \emph{Option} são checados antes de o programa existir, enquanto o acesso fora dos limites é contido durante a execução. Erros que em outras linguagens só aparecem em produção, às vezes explorados por um atacante, em Rust são barrados muito antes \cite{bugden2022}.
 \section{WebAssembly: ambiente e características}
 
 Se Rust resolve o problema de escrever código seguro e eficiente, o WebAssembly resolve um problema diferente: como fazer esse código ser executado dentro de um navegador com desempenho próximo ao nativo. É justamente essa combinação que torna as duas tecnologias complementares e justifica o foco deste trabalho.
 
-Por muito tempo, o JavaScript foi a única linguagem executada pelos navegadores. Isso funcionou para páginas simples, mas com o crescimento de aplicações mais pesadas, editores de imagem, jogos, processamento de vídeo, suas limitações ficaram evidentes. Foi para resolver esse problema que Google, Microsoft, Mozilla e Apple se uniram para criar o WebAssembly, cuja primeira versão foi consolidada em 2017 \cite{haas2017} e posteriormente estabelecido
+Por muito tempo, o JavaScript foi a única linguagem executada pelos navegadores. Isso funcionou para páginas simples, mas com o crescimento de aplicações mais pesadas, editores de imagem, jogos, processamento de vídeo, suas limitações ficaram evidentes. Foi para resolver esse problema que Google, Microsoft, Mozilla e Apple se uniram para criar o WebAssembly, cuja primeira versão foi consolidada em 2017 \cite{haas2018} e posteriormente estabelecido
 como padrão oficial do W3C em dezembro 2019 \cite{w3c2019}.
 
 WebAssembly é um formato binário compacto de baixo nível que executa com desempenho próximo ao nativo, servindo como alvo de compilação para linguagens como Rust, C e C++. Ele não foi criado para substituir o JavaScript, mas para trabalhar ao lado dele: enquanto o JavaScript cuida da interface e das interações, o Wasm assume as partes que exigem mais processamento \cite{mdn2026}.
@@ -277,7 +178,7 @@ Esse modelo elimina tanto o trabalho manual de liberar memória, que em C freque
 
 \subsection{WebAssembly: Desempenho Frente ao JavaScript e à Execução Nativa}
 
-Dentro do ambiente do navegador, o WebAssembly já representa um avanço considerável em relação ao JavaScript. Em tarefas computacionais intensas, o WebAssembly supera oasm.js (subconjunto otimizável do JavaScript e seu antecessor mais próximo), sendo em média 1,3 vezes mais rápido \cite{jangda2019}. No entanto, há uma ressalva importante: transferir dados complexos para dentro da memória do módulo tem um custo. Para passar uma \emph{string} ao Wasm, por exemplo, é necessário codificá-la, localizar espaço livre na memória linear e escrevê-la \emph{byte} a \emph{byte}, um processo que pode anular o ganho de desempenho em operações simples com texto. Quando o dado já está na memória ou o algoritmo é suficientemente complexo, o Wasm volta a superar o JavaScript por ampla margem \cite{moric2022}.
+Dentro do ambiente do navegador, o WebAssembly já representa um avanço considerável em relação ao JavaScript. Em tarefas computacionais intensas, o WebAssembly supera o asm.js (subconjunto otimizável do JavaScript e seu antecessor mais próximo), sendo em média 1,3 vezes mais rápido \cite{jangda2019}. No entanto, há uma ressalva importante: transferir dados complexos para dentro da memória do módulo tem um custo. Para passar uma \emph{string} ao Wasm, por exemplo, é necessário codificá-la, localizar espaço livre na memória linear e escrevê-la \emph{byte} a \emph{byte}, um processo que pode anular o ganho de desempenho em operações simples com texto. Quando o dado já está na memória ou o algoritmo é suficientemente complexo, o Wasm volta a superar o JavaScript por ampla margem \cite{moric2022}.
 
 Para ilustrar essa interação entre JavaScript e WebAssembly, o Algoritmo 9 apresenta uma função Rust que recebe uma string como parâmetro e realiza a contagem de suas vogais. O exemplo evidencia o uso de dados textuais na comunicação entre o código JavaScript e o módulo WebAssembly.
 
