@@ -89,7 +89,8 @@ abnt-repeated-author-omit = no
 }
 
 \lstdefinestyle{mystyle}{
-    basicstyle=\fontfamily{phv}\selectfont\footnotesize,
+    basicstyle=\ttfamily,
+    columns=fullflexible,
     commentstyle=\color{codegray},
     keywordstyle=\bfseries,
     stringstyle=\normalfont,
@@ -167,8 +168,8 @@ abnt-repeated-author-omit = no
 \renewcommand{\rmdefault}{phv} % arial
 \renewcommand{\sfdefault}{phv} % arial
 
-\renewcommand{\lstlistingname}{Algoritmo} % formatação de código fonte
-\renewcommand{\lstlistlistingname}{Lista de algoritmos}
+\renewcommand{\lstlistingname}{Código} % formatação de código fonte
+\renewcommand{\lstlistlistingname}{Lista de códigos}
 
 \input{content/capa}
 \tipotrabalho{Trabalho de Conclusão de Curso}
@@ -266,7 +267,7 @@ abnt-repeated-author-omit = no
 	\listoftables*
 	\cleardoublepage
 
-	% lista de algoritmos
+	% lista de codigos
 	\pdfbookmark[0]{\lstlistlistingname}{lol}
 	\begingroup
 	\renewcommand{\numberline}[2]{\hspace*{-1.4em}\lstlistingname~#1\quad–\quad#2}

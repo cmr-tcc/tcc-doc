@@ -52,7 +52,7 @@ Os testes foram realizados em 3 computadores diferentes, sendo posteriormente ca
 Computador 1:
 
 \begin{itemize}
-    \item Sistema operacional: Ubuntu 24.04 (Noble);
+    \item Sistema operacional: Ubuntu 24.04 (Noble Numbat);
     \item Kernel: Linux 6.17.0-35-generic;
     \item Processador: Intel i7 1165G7, 4 núcleos / 8 threads;
     \item Memória RAM: 16 GB LPDDR4 (8x2 GB) 4267 MHz;
@@ -62,20 +62,20 @@ Computador 1:
 Computador 2:
 
 \begin{itemize}
-    \item Sistema operacional: Ubuntu 24.04 LTS (Noble Numbat) via WSL 2;
+    \item Sistema operacional: Ubuntu 24.04 (Noble Numbat) via WSL 2;
     \item Kernel: Linux 6.6.87.2-microsoft-standard-WSL2;
     \item Processador: Intel Core i5-10300H, 4 núcleos / 8 threads;
-    \item Memória RAM: 8 GB DDR (8x1 GB) 3200 MHz;
+    \item Memória RAM: 8 GB DDR4 (8x1 GB) 3200 MHz;
     \item Armazenamento: SSD SATA de 500 GB KINGSTON SA400S37.
 \end{itemize}
 
 Computador 3:
 
 \begin{itemize}
-    \item Sistema operacional: Ubuntu 22.04 (Jammy) via WSL;
+    \item Sistema operacional: Ubuntu 22.04 (Jammy Jellyfish) via WSL 2;
     \item Kernel: Linux 6.6.114.1-microsoft-standard-WSL2;
     \item Processador: AMD Ryzen 5 5600x, 6 núcleos / 12 threads;
-    \item Memória RAM: 32 GB DDR4 (2x16 GB) 3200 MHz;
+    \item Memória RAM: 32 GB DDR4 (16x2 GB) 3200 MHz;
     \item Armazenamento: SSD NVMe de 500 GB KINGSTON SNVS500G.
 \end{itemize}
 
@@ -102,7 +102,7 @@ Essa abordagem também permitiu alterar parâmetros dos testes por meio de arqui
 
 \subsection{Coleta de métricas}
 
-Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo. Os \emph{scripts} desenvolvidos para a automação dos testes, a coleta dessas métricas e o código-fonte dos algoritmos utilizados estão disponíveis publicamente em um repositório no GitHub\footnote{Disponível em: \url{https://github.com/cmr-tcc/rust-wasm}.}. Para reduzir a interferência do consumo de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois de cada execução. Além disso, o contêiner era reiniciado antes de cada execução para remover recursos residuais.
+Durante a avaliação, foram coletadas as métricas de tempo de execução, uso de memória ao longo do tempo e uso de CPU ao longo do tempo. Os \emph{scripts} desenvolvidos para a automação dos testes, a coleta dessas métricas e o código-fonte dos algoritmos utilizados estão disponíveis publicamente em um repositório no GitHub\footnote{Disponível em: \url{https://github.com/cmr-tcc/rust-wasm/tree/0234cc3}, versão (\emph{commit}) \texttt{0234cc3}. Acesso em: 8 out. 2026.}. Para reduzir a interferência do consumo de recursos em estado de espera (\emph{standby}) pelo contêiner e, no caso do Wasm, pelo Puppeteer, além da sobrecarga de carregamento da página \emph{web}, foi adotado um tempo de 10 segundos em estado ocioso (\emph{idle}) antes e depois de cada execução. Além disso, o contêiner era reiniciado antes de cada execução para remover recursos residuais.
 
 O tempo de execução foi medido pelo próprio código de entrada de cada ambiente, utilizando as funções de medição de tempo de cada linguagem: a estrutura \emph{Instant} da biblioteca padrão do Rust, no ambiente nativo, e a função \emph{performance.now()} do JavaScript, no ambiente WebAssembly. Essas funções medem intervalos de tempo sem sofrer influência de ajustes no relógio do sistema. Após a execução de aquecimento, foi registrado o tempo total das $N = 10$ execuções consecutivas, e o tempo médio de execução de cada algoritmo foi obtido pela Equação~\eqref{eq:tempo-medio}:
 
