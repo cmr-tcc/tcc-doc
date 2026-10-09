@@ -11,7 +11,8 @@ A utilização de CPU, embora coletada, foi empregada apenas para identificar os
 
 \section{Tempo de Execução}
 
-A Tabela~\ref{tab:tempo} apresenta os tempos médios de execução obtidos nos ambientes Rust e WebAssembly para os cinco algoritmos avaliados, além do \emph{overhead} percentual e do fator multiplicativo, calculados pelas Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a partir das médias dos três computadores (Equação~\eqref{eq:media-computadores}). Os resultados mostram que o \emph{overhead} variou de 10,9\% a 126,9\%, indicando diferenças distintas entre os algoritmos avaliados. Em todos os casos, o WebAssembly apresentou tempo de execução maior que o Rust nativo.
+A Tabela~\ref{tab:tempo} apresenta os tempos médios de execução obtidos nos ambientes Rust e WebAssembly para os cinco algoritmos avaliados, além do \emph{overhead} percentual e do fator multiplicativo, calculados pelas Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a partir das médias dos três computadores (Equação (3.11)). Nessa comparação, o Rust nativo é a referência, limite superior de desempenho, de modo que o \emph{overhead} e o fator multiplicativo medem o desempenho do WebAssembly em relação a esse limite. Os resultados mostram que o \emph{overhead} variou de 10,9\% a 126,9\%, indicando diferenças distintas entre os algoritmos avaliados. Em todos os casos, o WebAssembly apresentou tempo de execução maior que o Rust nativo.
+
 \begin{table}[H]
     \caption{ Comparativo de tempo de execução médio (ms) }
     \label{tab:tempo}

@@ -135,7 +135,7 @@ m_i = \frac{M_i - C_i}{2^{20}}
 
 \subsection{Tempo de execução}
 
-Para a análise de desempenho temporal, o \emph{overhead} percentual do WebAssembly em relação ao Rust nativo foi calculado pela Equação~\eqref{eq:overhead}, e o fator multiplicativo, que indica quantas vezes a execução em WebAssembly foi mais lenta que a nativa, pela Equação~\eqref{eq:fator}:
+Para a análise de desempenho temporal, a execução nativa do Rust foi adotada como referência, representando o limite superior. Em relação a essa referência, o \emph{overhead} percentual do WebAssembly foi calculado pela Equação~\eqref{eq:overhead}, e o fator multiplicativo, que indica quantas vezes a execução em WebAssembly foi mais lenta que a nativa, pela Equação~\eqref{eq:fator}:
 
 \begin{equation}
 \label{eq:overhead}
