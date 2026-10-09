@@ -1,10 +1,10 @@
 \chapter{Material e Métodos}
 
-A abordagem deste trabalho é quantitativa, buscando mensurar o desempenho e o consumo de recursos de diferentes algoritmos. Para isso, foram adotadas as etapas de pesquisa bibliográfica, implementação prática e análise comparativa.
+A abordagem deste trabalho é quantitativa, buscando mensurar o desempenho e o consumo de recursos de diferentes algoritmos. Para isso, foram adotadas as etapas de pesquisa da literatura, implementação prática e análise comparativa.
 
-\section{PESQUISA BIBLIOGRÁFICA}
+\section{PESQUISA DA LITERATURA}
 
-Foram reunidas informações sobre Rust e WebAssembly na pesquisa bibliográfica, destacando seu contexto histórico, características técnicas e aplicabilidade.
+Foram reunidas informações sobre Rust e WebAssembly na pesquisa da literatura, destacando seu contexto histórico, características técnicas e aplicabilidade.
 
 Em relação ao Rust, foram abordados tópicos como o sistema de propriedade (\emph{ownership}) e o modelo de empréstimo de valores (\emph{borrowing}). Já para o WebAssembly, destacaram-se aspectos como o gerenciamento de memória, a segurança proporcionada pela restrição de permissões e sua integração com Rust por meio da portabilidade de código utilizando ferramentas como o wasm-pack.
 
@@ -124,9 +124,7 @@ A utilização de CPU na $i$-ésima amostra foi calculada pela Equação~\eqref{
 
 \noindent em que $u_i$ representa o tempo acumulado de CPU consumido pelo contêiner, em microssegundos, e $\tau_i$ o instante da leitura, também em microssegundos. Como o contêiner dispunha de dois núcleos, o valor pode ultrapassar 100\%.
 
-Embora coletada, a utilização de CPU não foi analisada como resultado comparativo entre os ambientes, sendo empregada apenas para separar os períodos de repouso e de execução na análise de memória, descrita na Seção~\ref{sec:consumo-memoria}. Durante a execução, a utilização média permaneceu praticamente constante entre os algoritmos em cada computador e ambiente, como no computador 1, em que variou de 107,0\% a 107,9\% no Rust e de 123,0\% a 123,9\% no Wasm, de modo que a métrica não diferenciou os algoritmos avaliados. Além disso, nas amostras do período ocioso anterior à execução, cerca de 70\% da utilização registrada para o contêiner não correspondeu a nenhum dos processos registrados individualmente, proporção obtida pela diferença entre a utilização do contêiner e a soma das utilizações dos processos, possivelmente em razão dos processos auxiliares de curta duração criados pelo próprio \emph{script} de coleta a cada leitura, o que impede separar com segurança o consumo dos ambientes avaliados da interferência do processo de medição.
-
-O consumo de memória na $i$-ésima amostra foi calculado pela Equação~\eqref{eq:memoria}:
+Embora coletada, a utilização de CPU não foi analisada como resultado comparativo entre os ambientes, sendo empregada apenas para separar os períodos de repouso e de execução na análise de memória, descrita na Seção~\ref{sec:consumo-memoria}. O consumo de memória na $i$-ésima amostra foi calculado pela Equação~\eqref{eq:memoria}:
 
 \begin{equation}
 \label{eq:memoria}
@@ -193,11 +191,11 @@ Para verificar se os resultados dependiam da escolha de $k$ e $n$, as métricas 
 
 \subsection{Consolidação dos resultados}
 
-Os procedimentos anteriores foram aplicados separadamente aos dados de cada computador. Em seguida, para cada algoritmo e ambiente, os resultados dos $K = 3$ computadores foram consolidados pela média aritmética, conforme a Equação~\eqref{eq:media-computadores}:
+Os procedimentos anteriores foram aplicados separadamente aos dados de cada computador. Em seguida, para cada algoritmo e ambiente, os resultados dos 3 computadores foram consolidados pela média aritmética, conforme a Equação~\eqref{eq:media-computadores}:
 
 \begin{equation}
 \label{eq:media-computadores}
-\bar{x} = \frac{1}{K} \sum_{j=1}^{K} x_j
+\bar{x} = \frac{1}{3} \sum_{j=1}^{3} x_j
 \end{equation}
 
 \noindent em que $x_j$ representa o valor obtido no $j$-ésimo computador para o tempo médio de execução (Equação~\eqref{eq:tempo-medio}) ou para as métricas de \emph{baseline}, pico e consumo líquido (Equações~\eqref{eq:baseline} a~\eqref{eq:liquido}). O \emph{overhead} e o fator multiplicativo de cada algoritmo foram calculados a partir dos tempos médios consolidados, aplicando-se as Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a $\bar{t}_{\text{rust}}$ e $\bar{t}_{\text{wasm}}$. Para analisar a variação entre os computadores, o \emph{overhead} também foi calculado separadamente para cada um, aplicando-se a Equação~\eqref{eq:overhead} aos seus próprios tempos médios. Os resultados de cada computador são apresentados no Apêndice~\ref{ap:resultados-computador}.
