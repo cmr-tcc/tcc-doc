@@ -118,6 +118,34 @@ Os resultados mostram que o Rust nativo foi mais rápido em todos os algoritmos 
 
 Também o ambiente WebAssembly exige, em repouso, cerca de 200 MiB a mais que o ambiente nativo, com \emph{baseline} de cerca de 210 MiB, contra 7,9 MiB a 16,6 MiB no Rust, para manter o Chrome Headless através do Puppeteer em execução, valor praticamente constante entre os algoritmos e independente da carga processada, tornando a comparação direta com o ambiente nativo inadequada. Por esse motivo, a análise de consumo de memória foi concentrada no consumo líquido, que isolou o impacto do algoritmo em execução. Por essa métrica, os dois ambientes apresentaram consumo reduzido na maioria dos algoritmos, com o WebAssembly ligeiramente acima do Rust nativo, e o maior consumo em ambos foi o do mandelbrot, determinado pelo tamanho do \emph{buffer} de saída.
 
+\section{Diretrizes para Adoção do WebAssembly}
+\label{sec:diretrizes}
+
+Com base na síntese dos resultados experimentais, foram elaboradas diretrizes técnicas para orientar a tomada de decisão sobre em quais cenários a execução de código Rust via WebAssembly representa uma alternativa viável à execução nativa. O Quadro~\ref{qua:diretrizes} sintetiza a classificação das cargas computacionais avaliadas, o \emph{overhead} médio de tempo observado em relação à execução nativa e a recomendação técnica de viabilidade correspondente.
+
+\begin{quadro}[H]
+    \caption{Diretrizes de viabilidade do Wasm conforme a carga}
+    \label{qua:diretrizes}
+    \centering
+    \setlength{\tabcolsep}{5pt}
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{4.25cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}c|>{\raggedright\arraybackslash}p{4.25cm}|}
+        \hline
+        Tipo de Carga & Algoritmo & Overhead (\%) & Viabilidade do Wasm \\
+        \hline
+        Operações com inteiros, manipulação de arrays & fannkuch-redux & 10,9\% & Altamente viável, baixo custo adicional. \\
+        \hline
+        Laços de repetição com ponto flutuante & spectral-norm & 12,9\% & Altamente viável, desempenho próximo ao nativo. \\
+        \hline
+        Geração de aleatórios e manipulação em memória & fasta & 21,2\% & Viável, desempenho aceitável. \\
+        \hline
+        Ponto flutuante iterativo e intensivo & n-body & 69,2\% & Inviável, mas exige testes com SIMD para Wasm. \\
+        \hline
+        Processamento numérico intensivo e manipulação de bits & mandelbrot & 126,9\% & Inviável, também exige experimentos com SIMD. \\
+        \hline
+    \end{tabular}
+    \fonte{Os autores}
+\end{quadro}
+
 \section{Limitações do estudo}
 
 Há limitações que devem ser consideradas neste estudo:
