@@ -52,9 +52,9 @@ O spectral-norm apresentou \emph{overhead} de 12,9\%. O algoritmo realiza opera�
 
 O algoritmo fasta obteve \emph{overhead} de 21,2\%. Sua execução envolve a geração de números pseudoaleatórios, consultas a tabelas de probabilidade acumulada e a escrita das sequências geradas em blocos de memória.
 
-O n-body registrou \emph{overhead} de 69,2\%. A simulação envolve cálculos iterativos de forças gravitacionais entre cinco corpos, com uso intensivo de operações de ponto flutuante de dupla precisão, incluindo raízes quadradas, sobre um conjunto reduzido de dados.
+O n-body registrou \emph{overhead} de 69,2\%. A simulação envolve cálculos iterativos de forças gravitacionais entre cinco corpos, com uso intensivo de operações de ponto flutuante de dupla precisão, incluindo raízes quadradas, sobre um conjunto reduzido de dados. Esse resultado pode ser atribuído ao fato de que, no perfil padrão, o WebAssembly executa esses cálculos apenas de forma escalar, enquanto o código nativo pode usar instruções vetoriais, que processam dois valores de dupla precisão por operação.
 
-O mandelbrot apresentou o maior \emph{overhead} observado, correspondente a 126,9\%. Nesse cenário, o tempo de execução em WebAssembly foi mais que o dobro do observado na execução nativa. O algoritmo realiza processamento intensivo de ponto flutuante de dupla precisão e grava o resultado em um \emph{buffer} de \emph{bits}.
+O mandelbrot apresentou o maior \emph{overhead} observado, correspondente a 126,9\%. Nesse cenário, o tempo de execução em WebAssembly foi mais que o dobro do observado na execução nativa. O algoritmo realiza processamento intensivo de ponto flutuante de dupla precisão e grava o resultado em um \emph{buffer} de \emph{bits}. Também, a diferença decorre do fato de o código nativo ser vetorizado pelo compilador, que calculam dois valores de dupla precisão por instrução, enquanto o WebAssembly calcula cada valor separadamente.
 
 Considerando todos os algoritmos avaliados, o \emph{overhead} médio foi de 48,2\% (Equação~\eqref{eq:media-overhead}), enquanto a mediana foi de 21,2\% (Equação~\eqref{eq:mediana-overhead}). A diferença entre essas métricas indica que os casos extremos, especialmente o mandelbrot, exercem influência significativa sobre a média geral dos resultados.
 

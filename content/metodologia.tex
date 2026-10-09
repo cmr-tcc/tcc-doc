@@ -16,6 +16,8 @@ No contexto do Rust, foi desenvolvido um código de entrada responsável por rec
 
 Para o WebAssembly, os algoritmos implementados em Rust foram portados utilizando a ferramenta wasm-pack. Além disso, foi criado um arquivo de entrada em HTML para carregar uma página contendo código JavaScript capaz de executar os algoritmos portados. Essa página também aceita parâmetros via URL para definir o algoritmo e a quantidade de execuções. A execução ocorre em um navegador sem interface gráfica (\emph{headless}), utilizando a biblioteca Puppeteer de JavaScript.
 
+Ambas as versões foram compiladas utilizando o perfil de compilação \texttt{release} padrão. Não foram especificadas flags adicionais de compilação, de modo que foram mantidas as configurações de otimização e demais opções predefinidas nesse perfil.
+
 \subsection{Algoritmos}
 
 Os seguintes algoritmos foram utilizados na implementação prática:
