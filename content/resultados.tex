@@ -1,68 +1,105 @@
 \chapter{Análise dos resultados}
 \label{cap:resultados}
 
-As métricas coletadas foram analisadas com base no levantamento teórico realizado, buscando avaliar os aspectos de desempenho de maneira objetiva e fundamentada em cada cenário analisado. Os valores apresentados neste capítulo correspondem à média dos resultados obtidos nos três computadores descritos na metodologia.
+As métricas coletadas foram analisadas com base no levantamento teórico realizado, buscando avaliar os aspectos de desempenho de maneira objetiva e fundamentada em cada cenário analisado. Para o tempo de execução, os valores consolidados correspondem à média geométrica dos fatores obtidos em cada um dos três computadores descritos na metodologia. Para o consumo de memória, correspondem à média aritmética entre eles.
 
 Para o tempo de execução, foi comparado o resultado entre os dois ambientes, expressando a diferença como \emph{overhead} percentual e fator multiplicativo.
 
 Para o consumo de memória, foram aplicadas as métricas de \emph{baseline}, pico e consumo líquido descritas anteriormente, a fim de isolar o consumo efetivo do algoritmo do \emph{overhead} fixo do ambiente de execução Wasm.
 
-A utilização de CPU, embora coletada, foi empregada apenas para identificar os períodos de execução, pelos motivos descritos na Seção~\ref{sec:consumo-memoria}. A média dessa métrica permaneceu praticamente constante entre os algoritmos em cada computador e ambiente, como no computador 1, em que variou de 107,0\% a 107,9\% no Rust e de 123,0\% a 123,9\% no Wasm, de modo que ela não diferenciou os algoritmos avaliados.
+A utilização de CPU, embora coletada, foi empregada apenas para identificar os períodos de execução, pelos motivos descritos na Seção~\ref{sec:consumo-memoria}. A média dessa métrica permaneceu praticamente constante entre os algoritmos em cada computador e ambiente, como no computador 1, em que variou de 107,3\% a 108,0\% no Rust e de 123,9\% a 124,7\% no Wasm, de modo que ela não diferenciou os algoritmos avaliados.
 
 \section{Tempo de Execução}
 
-A Tabela~\ref{tab:tempo} apresenta os tempos médios de execução obtidos nos ambientes Rust e WebAssembly para os cinco algoritmos avaliados, além do \emph{overhead} percentual e do fator multiplicativo, calculados pelas Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a partir das médias dos três computadores (Equação (3.11)). Nessa comparação, o Rust nativo é a referência, limite superior de desempenho, de modo que o \emph{overhead} e o fator multiplicativo medem o desempenho do WebAssembly em relação a esse limite. Os resultados mostram que o \emph{overhead} variou de 10,9\% a 126,9\%, indicando diferenças distintas entre os algoritmos avaliados. Em todos os casos, o WebAssembly apresentou tempo de execução maior que o Rust nativo.
+A Tabela~\ref{tab:tempo} apresenta o \emph{overhead} do WebAssembly em cada computador, calculado a partir dos tempos medianos de cada máquina (Equações~\eqref{eq:tempo-mediano} e~\eqref{eq:overhead}), e o \emph{overhead} e o fator multiplicativo consolidados pela média geométrica (Equação~\eqref{eq:fator-consolidado}). Nessa comparação, o Rust nativo é a referência, limite superior de desempenho, de modo que o \emph{overhead} e o fator multiplicativo medem o desempenho do WebAssembly em relação a esse limite. Os tempos medianos e os desvios padrão de cada computador são apresentados na Tabela~\ref{tab:tempo-computador}. Os resultados mostram que o \emph{overhead} consolidado variou de 6,7\% a 129,9\%, indicando diferenças distintas entre os algoritmos avaliados. Em todos os casos e em todos os computadores, o WebAssembly apresentou tempo de execução maior que o Rust nativo.
 
-\begin{table}[H]
-    \caption{ Comparativo de tempo de execução médio (ms) }
+\begin{table}[!htb]
+    \caption{\emph{Overhead} do WebAssembly por computador e consolidado}
     \label{tab:tempo}
     \centering
     \setlength{\tabcolsep}{5pt}
-    \begin{tabular}{ccccccc}
+    \begin{tabular}{lccccc}
         \hline
-        Algoritmo &Rust (ms) &Wasm (ms) &Overhead (\%) &Fator \\
+        & \multicolumn{3}{c}{Overhead por computador (\%)} & & \\
+        \cline{2-4}
+        Algoritmo & 1 & 2 & 3 & Overhead (\%) & Fator \\
         \hline
-        fannkuch-redux &21.226,7 &23.539,7 &10,9 &1,109x \\
+        fannkuch-redux & 3,3 & 8,4 & 8,4 & 6,7 & 1,067x \\
         \hline
-        spectral-norm &1.271,7 &1.436,2 &12,9 &1,129x \\
+        spectral-norm & 13,3 & 4,0 & 25,9 & 14,0 & 1,140x \\
         \hline
-        fasta &1.701,5 &2.061,5 &21,2 &1,212x \\
+        fasta & 13,3 & 22,6 & 18,6 & 18,1 & 1,181x \\
         \hline
-        n-body &1.907,7 &3.227,3 &69,2 &1,692x \\
+        n-body & 71,0 & 94,4 & 46,9 & 69,7 & 1,697x \\
         \hline
-        mandelbrot &3.253,5 &7.381,7 &126,9 &2,269x \\
+        mandelbrot & 117,1 & 138,3 & 135,0 & 129,9 & 2,299x \\
         \hline
     \end{tabular}
     \fonte{Os autores}
 \end{table}
 
-Os menores \emph{overheads} foram observados em fannkuch-redux e spectral-norm, com 10,9\% e 12,9\%, respectivamente. Em contraste, n-body e mandelbrot apresentaram as maiores diferenças, com 69,2\% e 126,9\%. A Figura~\ref{fig:grafico-tempo-benchmarking} permite visualizar essas diferenças entre os tempos médios de execução nos dois ambientes.
+Os menores \emph{overheads} foram observados em fannkuch-redux e spectral-norm, com 6,7\% e 14,0\%, respectivamente. Em contraste, n-body e mandelbrot apresentaram as maiores diferenças, com 69,7\% e 129,9\%. A Figura~\ref{fig:grafico-fator} apresenta o fator multiplicativo de cada algoritmo, com uma coluna para cada computador e um traço horizontal para o fator consolidado, permitindo visualizar tanto a diferença entre os algoritmos quanto a variação entre as máquinas.
 
 \begin{figure}[!htb]
 	\centering
-	\caption{Comparativo de tempo de execução médio}
-    \label{fig:grafico-tempo-benchmarking}
-	\includegraphics[width=\textwidth]{media/grafico-tempo-benchmarking}
+	\caption{Fator multiplicativo do WebAssembly por algoritmo e computador}
+    \label{fig:grafico-fator}
+	\includegraphics[width=\textwidth]{media/fator-por-algoritmo}
     \fonte{Os autores}
 \end{figure}
 
-O algoritmo fannkuch-redux registrou o menor \emph{overhead}, correspondente a 10,9\%, ou fator 1,109x. Trata-se de um algoritmo baseado em permutações de vetores de inteiros de tamanho fixo, com operações predominantemente inteiras.
+O algoritmo fannkuch-redux registrou o menor \emph{overhead}, correspondente a 6,7\%, ou fator 1,067x. Trata-se de um algoritmo baseado em permutações de vetores de inteiros de tamanho fixo, com operações predominantemente inteiras.
 
-O spectral-norm apresentou \emph{overhead} de 12,9\%. O algoritmo realiza operações de ponto flutuante de dupla precisão em laços sobre vetores.
+O spectral-norm apresentou \emph{overhead} de 14,0\%. O algoritmo realiza operações de ponto flutuante de dupla precisão em laços sobre vetores.
 
-O algoritmo fasta obteve \emph{overhead} de 21,2\%. Sua execução envolve a geração de números pseudoaleatórios, consultas a tabelas de probabilidade acumulada e a formatação das sequências em linhas de 60 caracteres. As sequências geradas não são gravadas em arquivo nem exibidas no terminal: elas são escritas em um destino que descarta os dados (\texttt{std::io::sink}), com o mesmo código nos dois ambientes. Dessa forma, o tempo medido não inclui operações de entrada e saída, e a saída recebe o mesmo tratamento no Rust nativo e no WebAssembly.
+O algoritmo fasta obteve \emph{overhead} de 18,1\%. Sua execução envolve a geração de números pseudoaleatórios, consultas a tabelas de probabilidade acumulada e a formatação das sequências em linhas de 60 caracteres. As sequências geradas não são gravadas em arquivo nem exibidas no terminal: elas são escritas em um destino que descarta os dados (\texttt{std::io::sink}), com o mesmo código nos dois ambientes. Dessa forma, o tempo medido não inclui operações de entrada e saída, e a saída recebe o mesmo tratamento no Rust nativo e no WebAssembly.
 
-O n-body registrou \emph{overhead} de 69,2\%. A simulação envolve cálculos iterativos de forças gravitacionais entre cinco corpos, com uso intensivo de operações de ponto flutuante de dupla precisão, incluindo raízes quadradas, sobre um conjunto reduzido de dados. Esse resultado pode ser atribuído ao fato de que, no perfil padrão, o WebAssembly executa esses cálculos apenas de forma escalar, enquanto o código nativo pode usar instruções vetoriais, que processam dois valores de dupla precisão por operação.
+O n-body registrou \emph{overhead} de 69,7\%. A simulação envolve cálculos iterativos de forças gravitacionais entre cinco corpos, com uso intensivo de operações de ponto flutuante de dupla precisão, incluindo raízes quadradas, sobre um conjunto reduzido de dados. Esse resultado pode ser atribuído ao fato de que, no perfil padrão, o WebAssembly executa esses cálculos apenas de forma escalar, enquanto o código nativo pode usar instruções vetoriais, que processam dois valores de dupla precisão por operação.
 
-O mandelbrot apresentou o maior \emph{overhead} observado, correspondente a 126,9\%. Nesse cenário, o tempo de execução em WebAssembly foi mais que o dobro do observado na execução nativa. O algoritmo realiza processamento intensivo de ponto flutuante de dupla precisão e grava o resultado em um \emph{buffer} de \emph{bits} mantido na memória, com cerca de 30,5 MiB. A imagem não é gravada em arquivo, ao final, apenas um checksum desse \emph{buffer} é impresso com a macro (\texttt{println!}). No ambiente nativo, essa linha vai para a saída padrão do contêiner, no WebAssembly, é descartada, pois o alvo (\texttt{wasm32-unknown-unknown}) não possui saída padrão. Como se trata de uma única linha por execução, essa diferença é desprezível diante do tempo de processamento e não explica o \emph{overhead} observado. Uma possível explicação para essa diferença de desempenho está na vetorização realizada pelo compilador na execução nativa, que permite processar dois valores de ponto flutuante de dupla precisão por instrução, enquanto, na implementação WebAssembly avaliada, esses valores são processados separadamente.
+O mandelbrot apresentou o maior \emph{overhead} observado, correspondente a 129,9\%. Nesse cenário, o tempo de execução em WebAssembly foi mais que o dobro do observado na execução nativa. O algoritmo realiza processamento intensivo de ponto flutuante de dupla precisão e grava o resultado em um \emph{buffer} de \emph{bits} mantido na memória, com cerca de 30,5 MiB. A imagem não é gravada em arquivo, ao final, apenas um checksum desse \emph{buffer} é impresso com a macro (\texttt{println!}). No ambiente nativo, essa linha vai para a saída padrão do contêiner, no WebAssembly, é descartada, pois o alvo (\texttt{wasm32-unknown-unknown}) não possui saída padrão. Como se trata de uma única linha por execução, essa diferença é desprezível diante do tempo de processamento e não explica o \emph{overhead} observado. Uma possível explicação para essa diferença de desempenho está na vetorização realizada pelo compilador na execução nativa, que permite processar dois valores de ponto flutuante de dupla precisão por instrução, enquanto, na implementação WebAssembly avaliada, esses valores são processados separadamente.
 
-Considerando todos os algoritmos avaliados, o \emph{overhead} médio foi de 48,2\% (Equação~\eqref{eq:media-overhead}), enquanto a mediana foi de 21,2\% (Equação~\eqref{eq:mediana-overhead}). A diferença entre essas métricas indica que os casos extremos, especialmente o mandelbrot, exercem influência significativa sobre a média geral dos resultados.
+Considerando todos os algoritmos avaliados, o \emph{overhead} médio foi de 47,7\% (Equação~\eqref{eq:media-overhead}), enquanto a mediana foi de 18,1\% (Equação~\eqref{eq:mediana-overhead}). A diferença entre essas métricas indica que os casos extremos, especialmente o mandelbrot, exercem influência significativa sobre a média geral dos resultados.
 
-Os valores absolutos de tempo variaram entre os três computadores, que possuem configurações de \emph{hardware} e sistema operacional distintas, e o \emph{overhead} de alguns algoritmos também oscilou entre as máquinas, como no fannkuch-redux, entre 4,0\% e 18,0\%, e no spectral-norm, entre 7,6\% e 26,6\%. Ainda assim, a separação entre os grupos se manteve em todas elas: mandelbrot e n-body registraram os maiores \emph{overheads} nos três computadores, enquanto fannkuch-redux, spectral-norm e fasta permaneceram abaixo de 27\%.
+O \emph{overhead} de alguns algoritmos oscilou entre os computadores, que possuem configurações de \emph{hardware} e sistema operacional distintas, como no spectral-norm, entre 4,0\% e 25,9\%, e no n-body, entre 46,9\% e 94,4\%. Ainda assim, a separação entre os grupos se manteve em todas as máquinas: mandelbrot e n-body registraram os maiores \emph{overheads} nos três computadores, enquanto fannkuch-redux, spectral-norm e fasta permaneceram abaixo de 26\%. Dentro de cada computador, a variação entre as 10 execuções foi pequena: o coeficiente de variação, razão entre o desvio padrão e a média, ficou em até 3,2\% na maioria dos casos. Os maiores valores ocorreram no WebAssembly, no n-body e no spectral-norm do computador 2, com 8,2\% e 9,5\%, e no fannkuch-redux do computador 3, com 7,0\%, casos em que o uso da mediana reduz a influência das execuções atípicas.
+
+\begin{table}[H]
+    \caption{Tempo mediano e desvio padrão das execuções por computador}
+    \label{tab:tempo-computador}
+    \centering
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{lccccc}
+        \hline
+        & & \multicolumn{2}{c}{Rust (ms)} & \multicolumn{2}{c}{Wasm (ms)} \\
+        \cline{3-4} \cline{5-6}
+        Algoritmo & Computador & Mediana & Desvio padrão & Mediana & Desvio padrão \\
+        \hline
+        fannkuch-redux & 1 & 19.241,4 & 173,9 & 19.884,9 & 247,2 \\
+         & 2 & 21.099,7 & 73,5 & 22.865,5 & 73,6 \\
+         & 3 & 14.931,1 & 164,7 & 16.181,8 & 1.176,6 \\
+        \hline
+        spectral-norm & 1 & 1.017,0 & 12,4 & 1.151,9 & 5,0 \\
+         & 2 & 1.304,8 & 28,1 & 1.356,7 & 133,9 \\
+         & 3 & 902,7 & 6,2 & 1.136,5 & 7,6 \\
+        \hline
+        fasta & 1 & 1.504,4 & 6,5 & 1.704,9 & 44,6 \\
+         & 2 & 1.688,1 & 12,2 & 2.070,0 & 17,6 \\
+         & 3 & 1.283,9 & 41,5 & 1.522,6 & 29,9 \\
+        \hline
+        n-body & 1 & 1.464,0 & 4,7 & 2.504,1 & 8,6 \\
+         & 2 & 1.765,7 & 22,8 & 3.431,7 & 293,4 \\
+         & 3 & 1.661,9 & 29,4 & 2.441,3 & 50,4 \\
+        \hline
+        mandelbrot & 1 & 2.829,7 & 4,5 & 6.143,2 & 73,0 \\
+         & 2 & 3.429,1 & 23,7 & 8.172,5 & 47,6 \\
+         & 3 & 1.981,1 & 9,2 & 4.655,2 & 59,1 \\
+        \hline
+    \end{tabular}
+    \fonte{Os autores}
+\end{table}
 
 \section{Uso de Memória}
 
-As métricas de \emph{baseline}, pico e consumo líquido foram calculadas pelas Equações~\eqref{eq:baseline} a~\eqref{eq:liquido} para cada computador e consolidadas pela média entre eles (Equação~\eqref{eq:media-computadores}). As Tabelas~\ref{tab:memoria-rust} e~\ref{tab:memoria-wasm} apresentam os resultados obtidos.
+As métricas de \emph{baseline}, pico e consumo líquido foram calculadas pelas Equações~\eqref{eq:baseline} a~\eqref{eq:liquido} para cada computador e consolidadas pela média aritmética entre eles (Equação~\eqref{eq:media-computadores}). As Tabelas~\ref{tab:memoria-rust} e~\ref{tab:memoria-wasm} apresentam os resultados obtidos.
 
 \begin{table}[!h]
     \caption{Consumo de memória do executável Rust (MiB)}
@@ -73,11 +110,11 @@ As métricas de \emph{baseline}, pico e consumo líquido foram calculadas pelas 
         \hline
         Algoritmo & Base & Pico & Líquido \\
         \hline
-        fannkuch-redux  & 16,6 & 17,7 & 1,1 \\
-        n-body          & 7,9  & 8,6  & 0,7 \\
-        spectral-norm   & 8,1  & 9,0  & 1,0 \\
-        mandelbrot      & 8,0  & 40,4 & 32,3 \\
-        fasta           & 7,9  & 9,1  & 1,2 \\
+        fannkuch-redux  & 14,0 & 15,0 & 1,0 \\
+        n-body          & 9,6 & 10,9 & 1,2 \\
+        spectral-norm   & 8,2 & 9,2 & 0,9 \\
+        mandelbrot      & 8,2 & 40,5 & 32,3 \\
+        fasta           & 8,7 & 9,7 & 1,0 \\
         \hline
     \end{tabular}
     \fonte{Os autores}
@@ -92,36 +129,36 @@ As métricas de \emph{baseline}, pico e consumo líquido foram calculadas pelas 
         \hline
         Algoritmo & Base & Pico & Líquido \\
         \hline
-        fannkuch-redux  & 218,6 & 237,0 & 18,4 \\
-        n-body          & 209,9 & 213,7 & 3,8 \\
-        spectral-norm   & 209,6 & 211,7 & 2,2 \\
-        mandelbrot      & 209,9 & 245,9 & 36,1 \\
-        fasta           & 209,9 & 212,7 & 2,8 \\
+        fannkuch-redux  & 233,3 & 251,6 & 18,3 \\
+        n-body          & 211,8 & 215,1 & 3,3 \\
+        spectral-norm   & 209,3 & 211,2 & 1,9 \\
+        mandelbrot      & 209,9 & 246,1 & 36,2 \\
+        fasta           & 211,1 & 213,9 & 2,8 \\
         \hline
     \end{tabular}
     \fonte{Os autores}
 \end{table}
 
-O \emph{baseline} do ambiente Rust situou-se entre 7,9 MiB e 16,6 MiB, refletindo principalmente o consumo do contêiner em estado ocioso. O valor mais alto, observado no fannkuch-redux, decorre de um dos computadores, que registrou 32,1 MiB nessa execução, enquanto os demais ficaram próximos de 9 MiB. No ambiente WebAssembly, os valores de \emph{baseline} variaram entre 209,6 MiB e 218,6 MiB, em razão da execução permanente do Chrome Headless e do Puppeteer.
+O \emph{baseline} do ambiente Rust situou-se entre 8,2 MiB e 14,0 MiB, refletindo principalmente o consumo do contêiner em estado ocioso. O valor mais alto, observado no fannkuch-redux, decorre do computador 2, que registrou 25,0 MiB nessa execução, enquanto os demais ficaram próximos de 8 MiB. No ambiente WebAssembly, os valores de \emph{baseline} variaram entre 209,3 MiB e 233,3 MiB, em razão da execução permanente do Chrome Headless e do Puppeteer, e o valor mais alto, também no fannkuch-redux, decorre do mesmo computador, com 273,0 MiB.
 
 Dessa forma, a comparação direta entre os valores totais de memória não é adequada para avaliar exclusivamente o impacto dos algoritmos. Por esse motivo, a análise foi concentrada no consumo líquido de memória.
 
-Considerando essa métrica, o Rust apresentou consumo líquido entre 0,7 MiB e 1,2 MiB em quatro dos cinco algoritmos: fannkuch-redux, n-body, spectral-norm e fasta. A exceção foi o mandelbrot, com 32,3 MiB, valor praticamente idêntico nos três computadores e compatível com o \emph{buffer} alocado pelo algoritmo, que usa um \emph{bit} por \emph{pixel} de uma imagem de 16.000 por 16.000 \emph{pixels}, totalizando cerca de 30,5 MiB.
+Considerando essa métrica, o Rust apresentou consumo líquido entre 0,9 MiB e 1,2 MiB em quatro dos cinco algoritmos: fannkuch-redux, n-body, spectral-norm e fasta. A exceção foi o mandelbrot, com 32,3 MiB, valor praticamente idêntico nos três computadores e compatível com o \emph{buffer} alocado pelo algoritmo, que usa um \emph{bit} por \emph{pixel} de uma imagem de 16.000 por 16.000 \emph{pixels}, totalizando cerca de 30,5 MiB.
 
-No WebAssembly, o consumo líquido ficou entre 2,2 MiB e 3,8 MiB para n-body, spectral-norm e fasta, ligeiramente acima dos valores do Rust nativo. O mandelbrot também apresentou o maior consumo nesse ambiente, com 36,1 MiB, valor igualmente compatível com o \emph{buffer} de saída, que no WebAssembly é alocado na memória linear do módulo. O fannkuch-redux registrou 18,4 MiB, porém com grande variação entre os computadores, de 4,2 MiB a 39,5 MiB.
+No WebAssembly, o consumo líquido ficou entre 1,9 MiB e 3,3 MiB para n-body, spectral-norm e fasta, ligeiramente acima dos valores do Rust nativo. O mandelbrot também apresentou o maior consumo nesse ambiente, com 36,2 MiB, valor igualmente compatível com o \emph{buffer} de saída, que no WebAssembly é alocado na memória linear do módulo. O fannkuch-redux registrou 18,3 MiB, porém com grande variação entre os computadores, de 5,6 MiB a 38,4 MiB.
 
 De modo geral, o consumo líquido do WebAssembly foi maior que o do Rust nativo em todos os algoritmos.
 
 \section{Síntese comparativa}
 
-Os resultados mostram que o Rust nativo foi mais rápido em todos os algoritmos e que o \emph{overhead} do WebAssembly variou de forma expressiva conforme o algoritmo. Fannkuch-redux, spectral-norm e fasta ficaram entre 10,9\% e 21,2\%, enquanto n-body e mandelbrot chegaram a 69,2\% e 126,9\%, separação que se manteve nos três computadores.
+Os resultados mostram que o Rust nativo foi mais rápido em todos os algoritmos e que o \emph{overhead} do WebAssembly variou de forma expressiva conforme o algoritmo. Fannkuch-redux, spectral-norm e fasta ficaram entre 6,7\% e 18,1\%, enquanto n-body e mandelbrot chegaram a 69,7\% e 129,9\%, separação que se manteve nos três computadores.
 
-Também o ambiente WebAssembly exige, em repouso, cerca de 200 MiB a mais que o ambiente nativo, com \emph{baseline} de cerca de 210 MiB, contra 7,9 MiB a 16,6 MiB no Rust, para manter o Chrome Headless através do Puppeteer em execução, valor praticamente constante entre os algoritmos e independente da carga processada, tornando a comparação direta com o ambiente nativo inadequada. Por esse motivo, a análise de consumo de memória foi concentrada no consumo líquido, que isolou o impacto do algoritmo em execução. Por essa métrica, os dois ambientes apresentaram consumo reduzido na maioria dos algoritmos, com o WebAssembly ligeiramente acima do Rust nativo, e o maior consumo em ambos foi o do mandelbrot, determinado pelo tamanho do \emph{buffer} de saída.
+Também o ambiente WebAssembly exige, em repouso, entre 201,1 MiB e 219,3 MiB a mais que o ambiente nativo, com \emph{baseline} entre 209,3 MiB e 233,3 MiB, contra 8,2 MiB a 14,0 MiB no Rust, para manter o Chrome Headless através do Puppeteer em execução, valor que variou pouco entre os algoritmos e independe da carga processada, tornando a comparação direta com o ambiente nativo inadequada. Por esse motivo, a análise de consumo de memória foi concentrada no consumo líquido, que isolou o impacto do algoritmo em execução. Por essa métrica, os dois ambientes apresentaram consumo reduzido na maioria dos algoritmos, com o WebAssembly ligeiramente acima do Rust nativo, e o maior consumo em ambos foi o do mandelbrot, determinado pelo tamanho do \emph{buffer} de saída.
 
 \section{Diretrizes para Adoção do WebAssembly}
 \label{sec:diretrizes}
 
-Com base na síntese dos resultados experimentais, foram elaboradas diretrizes técnicas para orientar a tomada de decisão sobre em quais cenários a execução de código Rust via WebAssembly representa uma alternativa viável à execução nativa. O Quadro~\ref{qua:diretrizes} sintetiza a classificação das cargas computacionais avaliadas, o \emph{overhead} médio de tempo observado em relação à execução nativa e a recomendação técnica de viabilidade correspondente.
+Com base na síntese dos resultados experimentais, foram elaboradas diretrizes técnicas para orientar a tomada de decisão sobre em quais cenários a execução de código Rust via WebAssembly representa uma alternativa viável à execução nativa. O Quadro~\ref{qua:diretrizes} sintetiza a classificação das cargas computacionais avaliadas, o \emph{overhead} consolidado de tempo observado em relação à execução nativa e a recomendação técnica de viabilidade correspondente.
 
 \begin{quadro}[H]
     \caption{Diretrizes de viabilidade do Wasm conforme a carga}
@@ -132,15 +169,15 @@ Com base na síntese dos resultados experimentais, foram elaboradas diretrizes t
         \hline
         Tipo de Carga & Algoritmo & Overhead (\%) & Viabilidade do Wasm \\
         \hline
-        Operações com inteiros, manipulação de arrays & fannkuch-redux & 10,9\% & Altamente viável, baixo custo adicional. \\
+        Operações com inteiros, manipulação de arrays & fannkuch-redux & 6,7\% & Altamente viável, baixo custo adicional. \\
         \hline
-        Laços de repetição com ponto flutuante & spectral-norm & 12,9\% & Altamente viável, desempenho próximo ao nativo. \\
+        Laços de repetição com ponto flutuante & spectral-norm & 14,0\% & Altamente viável, desempenho próximo ao nativo. \\
         \hline
-        Geração de aleatórios e manipulação em memória & fasta & 21,2\% & Viável, desempenho aceitável. \\
+        Geração de aleatórios e manipulação em memória & fasta & 18,1\% & Viável, desempenho aceitável. \\
         \hline
-        Ponto flutuante iterativo e intensivo & n-body & 69,2\% & Inviável, mas exige testes com vetorização no Wasm. \\
+        Ponto flutuante iterativo e intensivo & n-body & 69,7\% & Inviável, mas exige testes com vetorização no Wasm. \\
         \hline
-        Processamento numérico intensivo e manipulação de bits & mandelbrot & 126,9\% & Inviável, também exige experimentos com vetorização. \\
+        Processamento numérico intensivo e manipulação de bits & mandelbrot & 129,9\% & Inviável, também exige experimentos com vetorização. \\
         \hline
     \end{tabular}
     \fonte{Os autores}
