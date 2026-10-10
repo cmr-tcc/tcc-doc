@@ -169,7 +169,7 @@ Para a análise de desempenho temporal, a execução nativa do Rust foi adotada 
 
 \noindent em que $t_{\text{rust}}$ e $t_{\text{wasm}}$ representam os tempos medianos de execução (Equação~\eqref{eq:tempo-mediano}), em milissegundos, de cada ambiente em um mesmo computador.
 
-Como os computadores possuem configurações de \emph{hardware} distintas, os tempos absolutos de máquinas diferentes não foram combinados. O fator multiplicativo $f_j$ de cada algoritmo foi calculado em cada computador $j$, a partir dos seus próprios tempos medianos (Equação~\eqref{eq:fator}), e os fatores dos $K = 3$ computadores foram consolidados pela média geométrica, forma adequada para resumir razões de desempenho \cite{fleming1986}, conforme a Equação~\eqref{eq:fator-consolidado}:
+Como os computadores possuem configurações de \emph{hardware} distintas, os tempos absolutos de máquinas diferentes não foram combinados. O fator multiplicativo $f_j$ de cada algoritmo foi calculado em cada computador $j$, a partir dos seus próprios tempos medianos (Equação~\eqref{eq:fator}), e os fatores dos $K = 3$ computadores foram consolidados pela média geométrica, conforme a Equação~\eqref{eq:fator-consolidado}:
 
 \begin{equation}
 \label{eq:fator-consolidado}
