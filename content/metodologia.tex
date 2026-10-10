@@ -47,7 +47,7 @@ Cada algoritmo foi executado 10 vezes em sequência. Antes da coleta de métrica
 
 Com o objetivo de isolar o ambiente de execução, foram utilizados contêineres por meio do Docker, com quantidades controladas de CPUs e memória RAM, limitadas a dois núcleos de processamento e 2 GB de memória, visando aumentar a reprodutibilidade dos experimentos.
 
-Os testes foram realizados em 3 computadores diferentes, sendo posteriormente calculada a média dos resultados obtidos. Além disso, foram padronizadas as versões das tecnologias utilizadas em todos os computadores. A seguir, são apresentados os hardwares e os softwares utilizados.
+Os testes foram realizados em 3 computadores diferentes. Em cada computador, foram calculados a mediana, a média e o desvio padrão dos tempos das execuções de cada algoritmo, e os resultados dos computadores foram posteriormente consolidados, conforme descrito na Seção~\ref{sec:consolidacao}. Além disso, foram padronizadas as versões das tecnologias utilizadas em todos os computadores. A seguir, são apresentados os hardwares e os softwares utilizados.
 
 \subsection{Hardwares}
 
@@ -116,16 +116,23 @@ A Figura~\ref{fig:cpu-fasta-rust} apresenta um exemplo do uso de CPU durante a e
     \fonte{Os autores}
 \end{figure}
 
-O tempo de execução foi medido pelo próprio código de entrada de cada ambiente, utilizando as funções de medição de tempo de cada linguagem: a estrutura \emph{Instant} da biblioteca padrão do Rust, no ambiente nativo, e a função \emph{performance.now()} do JavaScript, no ambiente WebAssembly. Essas funções medem intervalos de tempo sem sofrer influência de ajustes no relógio do sistema. Após a execução de aquecimento, foi registrado o tempo total das $N = 10$ execuções consecutivas, e o tempo médio de execução de cada algoritmo foi obtido pela Equação~\eqref{eq:tempo-medio}:
+O tempo de execução foi medido pelo próprio código de entrada de cada ambiente, utilizando as funções de medição de tempo de cada linguagem: a estrutura \emph{Instant} da biblioteca padrão do Rust, no ambiente nativo, e a função \emph{performance.now()} do JavaScript, no ambiente WebAssembly. Essas funções medem intervalos de tempo sem sofrer influência de ajustes no relógio do sistema. Após a execução de aquecimento, foi registrado o tempo de cada uma das $N = 10$ execuções consecutivas, $t_1, t_2, \ldots, t_N$, em milissegundos. O tempo de execução de cada algoritmo, em cada ambiente e computador, corresponde à mediana desses valores, conforme a Equação~\eqref{eq:tempo-mediano}, por ser menos sensível a execuções atípicas do que a média:
 
 \begin{equation}
-\label{eq:tempo-medio}
-t = \frac{T_{\text{fim}} - T_{\text{início}}}{N}
+\label{eq:tempo-mediano}
+\tilde{t} = \operatorname{mediana}\{\, t_1, t_2, \ldots, t_N \,\}
 \end{equation}
 
-\noindent em que $T_{\text{início}}$ e $T_{\text{fim}}$ representam os instantes, em milissegundos, do início da primeira e do término da última execução medida.
+A dispersão entre as execuções foi medida pelo desvio padrão amostral, conforme a Equação~\eqref{eq:desvio-padrao}:
 
-O uso de memória e de CPU foi coletado por um \emph{script} executado dentro do próprio contêiner, que realizava leituras periódicas dos contadores do \emph{cgroup} do Linux, mecanismo do núcleo do sistema operacional responsável por contabilizar os recursos utilizados pelo contêiner. Entre as leituras, foi utilizado um intervalo de espera de 250 milissegundos, o que, somado ao tempo de leitura das métricas, resultou em uma taxa mediana entre 2,9 e 3,2 amostras por segundo nos três computadores, calculada pela razão entre o número de amostras e a duração de cada coleta. O \emph{script} também registrava o consumo individual de cada processo, porém, na análise, foram consideradas apenas as amostras referentes ao contêiner como um todo.
+\begin{equation}
+\label{eq:desvio-padrao}
+s = \sqrt{\frac{1}{N-1} \sum_{i=1}^{N} \left( t_i - \bar{t} \right)^2}
+\end{equation}
+
+\noindent em que $\bar{t}$ representa a média aritmética das $N$ execuções.
+
+O uso de memória e de CPU foi coletado por um \emph{script} executado dentro do próprio contêiner, que realizava leituras periódicas dos contadores do \emph{cgroup} do Linux, mecanismo do núcleo do sistema operacional responsável por contabilizar os recursos utilizados pelo contêiner. Entre as leituras, foi utilizado um intervalo de espera de 250 milissegundos, o que, somado ao tempo de leitura das métricas, resultou em uma taxa mediana entre 2,8 e 3,2 amostras por segundo nos três computadores, calculada pela razão entre o número de amostras e a duração de cada coleta. O \emph{script} também registrava o consumo individual de cada processo, porém, na análise, foram consideradas apenas as amostras referentes ao contêiner como um todo.
 
 A utilização de CPU na $i$-ésima amostra foi calculada pela Equação~\eqref{eq:cpu}:
 
@@ -146,6 +153,7 @@ m_i = \frac{M_i - C_i}{2^{20}}
 \noindent em que $M_i$ representa a memória total contabilizada para o contêiner, em \emph{bytes}, e $C_i$ a parcela de \emph{cache} de arquivos inativa, que pode ser liberada pelo sistema operacional a qualquer momento e, portanto, não representa consumo efetivo. A divisão por $2^{20}$ converte o valor para MiB.
 
 \subsection{Tempo de execução}
+\label{sec:tempo-execucao}
 
 Para a análise de desempenho temporal, a execução nativa do Rust foi adotada como referência, representando o limite superior. Em relação a essa referência, o \emph{overhead} percentual do WebAssembly foi calculado pela Equação~\eqref{eq:overhead}, e o fator multiplicativo, que indica quantas vezes a execução em WebAssembly foi mais lenta que a nativa, pela Equação~\eqref{eq:fator}:
 
@@ -159,12 +167,21 @@ Para a análise de desempenho temporal, a execução nativa do Rust foi adotada 
 \text{fator} = \frac{t_{\text{wasm}}}{t_{\text{rust}}} = 1 + \frac{\text{\emph{overhead}}\,(\%)}{100}
 \end{equation}
 
-\noindent em que $t_{\text{rust}}$ e $t_{\text{wasm}}$ representam os tempos médios de execução, em milissegundos, de cada ambiente.
+\noindent em que $t_{\text{rust}}$ e $t_{\text{wasm}}$ representam os tempos medianos de execução (Equação~\eqref{eq:tempo-mediano}), em milissegundos, de cada ambiente em um mesmo computador.
+
+Como os computadores possuem configurações de \emph{hardware} distintas, os tempos absolutos de máquinas diferentes não foram combinados. O fator multiplicativo $f_j$ de cada algoritmo foi calculado em cada computador $j$, a partir dos seus próprios tempos medianos (Equação~\eqref{eq:fator}), e os fatores dos $K = 3$ computadores foram consolidados pela média geométrica, forma adequada para resumir razões de desempenho \cite{fleming1986}, conforme a Equação~\eqref{eq:fator-consolidado}:
+
+\begin{equation}
+\label{eq:fator-consolidado}
+\bar{f} = \left( \prod_{j=1}^{K} f_j \right)^{1/K}
+\end{equation}
+
+O \emph{overhead} consolidado de cada algoritmo foi obtido a partir de $\bar{f}$, pela relação da Equação~\eqref{eq:fator}, ou seja, $(\bar{f} - 1) \times 100$.
 
 \subsection{Consumo de memória}
 \label{sec:consumo-memoria}
 
-Para a análise de memória, foram derivadas três métricas a partir das amostras coletadas em cada execução: \emph{baseline}, pico e consumo líquido. Para isso, foi necessário separar o período ocioso do período de execução ativa. Como os algoritmos foram executados com uma única \emph{thread}, a execução ativa ocupa integralmente um núcleo de processamento, o que corresponde a 100\% na Equação~\eqref{eq:cpu}, elevando a utilização de CPU do contêiner acima desse valor. Não foi adotado um limiar inferior para identificar a execução porque, mesmo sem nenhum algoritmo em execução, a utilização de CPU do contêiner no período ocioso anterior à execução foi em média de 20,7\% no Rust e 46,6\% no Wasm, chegando a 91,3\%.
+Para a análise de memória, foram derivadas três métricas a partir das amostras coletadas em cada execução: \emph{baseline}, pico e consumo líquido. Para isso, foi necessário separar o período ocioso do período de execução ativa. Como os algoritmos foram executados com uma única \emph{thread}, a execução ativa ocupa integralmente um núcleo de processamento, o que corresponde a 100\% na Equação~\eqref{eq:cpu}, elevando a utilização de CPU do contêiner acima desse valor. Não foi adotado um limiar inferior para identificar a execução porque, mesmo sem nenhum algoritmo em execução, a utilização de CPU do contêiner no período ocioso anterior à execução foi em média de 21,5\% no Rust e 46,4\% no Wasm, chegando a 95,8\%.
 
 Para evitar que picos momentâneos de CPU, como os causados pela inicialização do navegador, fossem confundidos com a execução do algoritmo, foi definido o parâmetro $k$, que corresponde ao número mínimo de amostras consecutivas com utilização de CPU acima de 100\% para que um trecho seja considerado parte da execução. Foi adotado $k = 8$, o que corresponde a cerca de 2 a 3 segundos de coleta. O período de execução inicia na primeira amostra do primeiro trecho que atende a esse critério, de índice $a$, e termina na última amostra do último trecho, de índice $b$. O conjunto de execução $E$ reúne as amostras desse período com utilização de CPU acima de 100\%, conforme a Equação~\eqref{eq:conjunto-execucao}:
 
@@ -199,18 +216,19 @@ O consumo de \emph{baseline} (Equação~\eqref{eq:baseline}) corresponde ao mín
 
 Essa distinção é necessária porque o contêiner Wasm mantém o Chrome Headless e o Puppeteer em execução permanente, elevando o \emph{baseline} a cerca de 210 MiB independentemente do algoritmo executado.
 
-Para verificar se os resultados dependiam da escolha de $k$ e $n$, as métricas de memória foram recalculadas para todos os pares formados por um valor de $k$ entre 7 e 20 (14 valores) e um valor de $n$ entre 3 e 11 (9 valores), totalizando 126 pares de parâmetros. Em todos eles, o consumo líquido médio variou no máximo 1,6 MiB em relação aos valores adotados ($k = 8$ e $n = 10$). Valores de $k$ menores que 7 ou de $n$ maiores que 11 passam a incluir o período de carregamento do navegador, no qual a memória ainda está em crescimento, e por isso não foram considerados.
+Para verificar se os resultados dependiam da escolha de $k$ e $n$, as métricas de memória foram recalculadas para todos os pares formados por um valor de $k$ entre 8 e 20 (13 valores) e um valor de $n$ entre 3 e 17 (15 valores), totalizando 195 pares de parâmetros. Em todos eles, o consumo líquido médio variou no máximo 0,2 MiB em relação aos valores adotados ($k = 8$ e $n = 10$). Valores de $k$ menores que 8 ou de $n$ maiores que 17 passam a incluir o período de carregamento do navegador, no qual a memória ainda está em crescimento, e por isso não foram considerados.
 
 \subsection{Consolidação dos resultados}
+\label{sec:consolidacao}
 
-Os procedimentos anteriores foram aplicados separadamente aos dados de cada computador. Em seguida, para cada algoritmo e ambiente, os resultados dos 3 computadores foram consolidados pela média aritmética, conforme a Equação~\eqref{eq:media-computadores}:
+Os procedimentos anteriores foram aplicados separadamente aos dados de cada computador. Para o tempo de execução, os fatores de cada computador foram consolidados pela média geométrica (Equação~\eqref{eq:fator-consolidado}), conforme descrito na Seção~\ref{sec:tempo-execucao}. As métricas de memória, que não dependem da velocidade de cada máquina, uma vez que os contêineres possuíam os mesmos limites de recursos, foram consolidadas pela média aritmética entre os computadores, conforme a Equação~\eqref{eq:media-computadores}:
 
 \begin{equation}
 \label{eq:media-computadores}
-\bar{x} = \frac{1}{3} \sum_{j=1}^{3} x_j
+\bar{x} = \frac{1}{K} \sum_{j=1}^{K} x_j
 \end{equation}
 
-\noindent em que $x_j$ representa o valor obtido no $j$-ésimo computador para o tempo médio de execução (Equação~\eqref{eq:tempo-medio}) ou para as métricas de \emph{baseline}, pico e consumo líquido (Equações~\eqref{eq:baseline} a~\eqref{eq:liquido}). O \emph{overhead} e o fator multiplicativo de cada algoritmo foram calculados a partir dos tempos médios consolidados, aplicando-se as Equações~\eqref{eq:overhead} e~\eqref{eq:fator} a $\bar{t}_{\text{rust}}$ e $\bar{t}_{\text{wasm}}$. Para analisar a variação entre os computadores, o \emph{overhead} também foi calculado separadamente para cada um, aplicando-se a Equação~\eqref{eq:overhead} aos seus próprios tempos médios. Os resultados de cada computador são apresentados no Apêndice~\ref{ap:resultados-computador}.
+\noindent em que $x_j$ representa o valor de \emph{baseline}, pico ou consumo líquido (Equações~\eqref{eq:baseline} a~\eqref{eq:liquido}) obtido no $j$-ésimo computador. Os tempos medianos e os desvios padrão de cada computador são apresentados no Capítulo~\ref{cap:resultados}, e as métricas de memória de cada computador, no Apêndice~\ref{ap:resultados-computador}.
 
 Por fim, para sintetizar o comportamento geral, foram calculadas a média e a mediana do \emph{overhead} entre os $A = 5$ algoritmos avaliados. A média foi obtida pela Equação~\eqref{eq:media-overhead}, e a mediana corresponde ao valor central do conjunto de \emph{overheads} ordenado de forma crescente, conforme a Equação~\eqref{eq:mediana-overhead}:
 
@@ -224,6 +242,6 @@ Por fim, para sintetizar o comportamento geral, foram calculadas a média e a me
 \tilde{o} = o_{\left(\frac{A+1}{2}\right)}
 \end{equation}
 
-\noindent em que $o_k$ representa o \emph{overhead} do $k$-ésimo algoritmo e $o_{(j)}$ o $j$-ésimo menor valor entre eles. Como $A$ é ímpar, a mediana corresponde ao terceiro menor \emph{overhead}. A mediana foi incluída por ser menos sensível a valores extremos do que a média. Os resultados de tempo, \emph{overhead} e memória foram apresentados com uma casa decimal, e o fator multiplicativo com três, de modo a preservar a correspondência entre as duas métricas, dada pela Equação~\eqref{eq:fator}.
+\noindent em que $o_k$ representa o \emph{overhead} do $k$-ésimo algoritmo e $o_{(j)}$ o $j$-ésimo menor valor entre eles. Como $A$ é ímpar, a mediana corresponde ao terceiro menor \emph{overhead}. A mediana foi incluída por ser menos sensível a valores extremos do que a média. Os resultados de tempo, desvio padrão, \emph{overhead} e memória foram apresentados com uma casa decimal, e o fator multiplicativo com três, de modo a preservar a correspondência entre as duas métricas, dada pela Equação~\eqref{eq:fator}.
 
 O processamento dos dados foi realizado por meio de \emph{scripts} em Python desenvolvidos pelos autores.
