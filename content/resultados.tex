@@ -106,7 +106,7 @@ O \emph{baseline} do ambiente Rust situou-se entre 7,9 MiB e 16,6 MiB, refletind
 
 Dessa forma, a comparação direta entre os valores totais de memória não é adequada para avaliar exclusivamente o impacto dos algoritmos. Por esse motivo, a análise foi concentrada no consumo líquido de memória.
 
-Considerando essa métrica, o Rust apresentou consumo líquido entre 0,7 MiB e 1,2 MiB em quatro dos cinco algoritmos: fannkuch-redux, n-body, spectral-norm e fasta. A exceção foi o mandelbrot, com 32,3 MiB, valor praticamente idêntico nos três computadores e compatível com o \emph{buffer} de saída alocado pelo algoritmo, que armazena um \emph{bit} por \emph{pixel} de uma imagem de 16.000 por 16.000 \emph{pixels}, totalizando cerca de 30,5 MiB.
+Considerando essa métrica, o Rust apresentou consumo líquido entre 0,7 MiB e 1,2 MiB em quatro dos cinco algoritmos: fannkuch-redux, n-body, spectral-norm e fasta. A exceção foi o mandelbrot, com 32,3 MiB, valor praticamente idêntico nos três computadores e compatível com o \emph{buffer} alocado pelo algoritmo, que usa um \emph{bit} por \emph{pixel} de uma imagem de 16.000 por 16.000 \emph{pixels}, totalizando cerca de 30,5 MiB.
 
 No WebAssembly, o consumo líquido ficou entre 2,2 MiB e 3,8 MiB para n-body, spectral-norm e fasta, ligeiramente acima dos valores do Rust nativo. O mandelbrot também apresentou o maior consumo nesse ambiente, com 36,1 MiB, valor igualmente compatível com o \emph{buffer} de saída, que no WebAssembly é alocado na memória linear do módulo. O fannkuch-redux registrou 18,4 MiB, porém com grande variação entre os computadores, de 4,2 MiB a 39,5 MiB.
 
