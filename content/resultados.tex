@@ -139,7 +139,7 @@ As métricas de \emph{baseline}, pico e consumo líquido foram calculadas pelas 
     \fonte{Os autores}
 \end{table}
 
-O \emph{baseline} do ambiente Rust situou-se entre 8,2 MiB e 14,0 MiB, refletindo principalmente o consumo do contêiner em estado ocioso. O valor mais alto, observado no fannkuch-redux, decorre do computador 2, que registrou 25,0 MiB nessa execução, enquanto os demais ficaram próximos de 8 MiB. No ambiente WebAssembly, os valores de \emph{baseline} variaram entre 209,3 MiB e 233,3 MiB, em razão da execução permanente do Chrome Headless e do Puppeteer, e o valor mais alto, também no fannkuch-redux, decorre do mesmo computador, com 273,0 MiB.
+O \emph{baseline} do ambiente Rust situou-se entre 8,2 MiB e 14,0 MiB, refletindo principalmente o consumo do contêiner em estado ocioso. O valor mais alto, observado no fannkuch-redux, decorre do computador 2, que registrou 25,0 MiB nessa execução, enquanto os demais registraram 8,0 MiB e 8,9 MiB. No ambiente WebAssembly, os valores de \emph{baseline} variaram entre 209,3 MiB e 233,3 MiB, em razão da execução permanente do Chrome Headless e do Puppeteer, e o valor mais alto, também no fannkuch-redux, decorre do mesmo computador, com 273,0 MiB.
 
 Dessa forma, a comparação direta entre os valores totais de memória não é adequada para avaliar exclusivamente o impacto dos algoritmos. Por esse motivo, a análise foi concentrada no consumo líquido de memória.
 
