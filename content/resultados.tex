@@ -160,7 +160,7 @@ Também o ambiente WebAssembly exige, em repouso, entre 201,1 MiB e 219,3 MiB a 
 \section{Diretrizes para Adoção do WebAssembly}
 \label{sec:diretrizes}
 
-Com base na síntese dos resultados experimentais, foram elaboradas diretrizes técnicas para orientar a tomada de decisão sobre em quais cenários a execução de código Rust via WebAssembly representa uma alternativa viável à execução nativa. O Quadro~\ref{qua:diretrizes} sintetiza a classificação das cargas computacionais avaliadas, o \emph{overhead} consolidado de tempo observado em relação à execução nativa e a recomendação técnica de viabilidade correspondente.
+Com base na síntese dos resultados experimentais, foram elaboradas diretrizes técnicas para orientar a tomada de decisão sobre em quais cenários a execução de código Rust via WebAssembly representa uma alternativa viável à execução nativa. O Quadro~\ref{qua:diretrizes} sintetiza a classificação das cargas computacionais avaliadas, o \emph{overhead} consolidado de tempo observado em relação à execução nativa e a recomendação técnica de viabilidade correspondente. Para esta análise, considerou-se viável a adoção do WebAssembly quando o \emph{overhead} de tempo ficou abaixo de 20\%.
 
 \begin{quadro}[H]
     \caption{Diretrizes de viabilidade do Wasm conforme a carga}
@@ -171,9 +171,9 @@ Com base na síntese dos resultados experimentais, foram elaboradas diretrizes t
         \hline
         Tipo de Carga & Algoritmo & Overhead (\%) & Viabilidade do Wasm \\
         \hline
-        Operações com inteiros, manipulação de arrays & fannkuch-redux & 6,7\% & Altamente viável, baixo custo adicional. \\
+        Operações com inteiros, manipulação de arrays & fannkuch-redux & 6,7\% & Viável, baixo custo adicional. \\
         \hline
-        Laços de repetição com ponto flutuante & spectral-norm & 14,0\% & Altamente viável, desempenho próximo ao nativo. \\
+        Laços de repetição com ponto flutuante & spectral-norm & 14,0\% & Viável, desempenho próximo ao nativo. \\
         \hline
         Geração de aleatórios e manipulação em memória & fasta & 18,1\% & Viável, desempenho aceitável. \\
         \hline

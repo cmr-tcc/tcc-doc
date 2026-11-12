@@ -17,10 +17,11 @@ O Código~\ref{alg:ownership-borrowing} reúne os dois conceitos.
 \begin{lstlisting}[
     language=Rust,
     caption={\emph{Ownership} e \emph{borrowing} em Rust},
-    label={alg:ownership-borrowing}
+    label={alg:ownership-borrowing},
+    escapeinside={(*@}{@*)},
 ]
 fn main() {
-    // Ownership: o valor é transferido (move) para 'linguagem'.
+    // Ownership: o valor é(*@\ @*)transferido (move) para 'linguagem'.
     let nome = String::from("Rust");
     let linguagem = nome;
     // println!("{}", nome);   // erro: 'nome' não é mais o dono
@@ -157,11 +158,12 @@ O Código~\ref{alg:garbage-collector} ilustra esse comportamento por meio de uma
 \begin{lstlisting}[
     language=Rust,
     caption={Memória liberada automaticamente ao fim do escopo},
-    label={alg:garbage-collector}
+    label={alg:garbage-collector},
+    escapeinside={(*@}{@*)},
 ]
 fn main() {
-    // 'mensagem' é criada aqui e pertence a este escopo
-    let mensagem = String::from("olá, Mundo!");
+    // 'mensagem' é(*@\ @*)criada aqui e pertence a este escopo
+    let mensagem = String::from("Olá, Mundo!");
     println!("{}", mensagem);
     // Ao chegar aqui, 'mensagem' sai de escopo
     // e sua memória é liberada automaticamente pelo compilador.
@@ -199,4 +201,4 @@ pub fn contar_vogais(texto: &str) -> u32 {
 \end{lstlisting}
 \fontealgoritmo{Os autores}
 
-Contudo, a comparação mais relevante para este trabalho não é entre WebAssembly e JavaScript, mas entre WebAssembly e a execução nativa do próprio Rust. Nesse confronto, o cenário é diferente. Estudos mostram que aplicações compiladas para WebAssembly são executadas, em média, entre 45\% e 55\% mais devagar do que o equivalente nativo, a depender do navegador utilizado \cite{jangda2019}. Esse é exatamente o \emph{gap} que este trabalho busca caracterizar no contexto específico de aplicações Rust, contribuindo com dados concretos para orientar decisões sobre quando a portabilidade do Wasm justifica a perda de desempenho em relação à execução nativa.
+Contudo, a comparação mais relevante para este trabalho não é entre WebAssembly e JavaScript, mas entre WebAssembly e a execução nativa do próprio Rust. Nesse confronto, o cenário é diferente. Segundo \citeauthoronline{jangda2019} (\citeyear{jangda2019}), aplicações compiladas para WebAssembly são executadas, em média, entre 45\% e 55\% mais devagar do que o equivalente nativo, a depender do navegador utilizado. Esse é exatamente o \emph{gap} que este trabalho busca caracterizar no contexto específico de aplicações Rust, contribuindo com dados concretos para orientar decisões sobre quando a portabilidade do Wasm justifica a perda de desempenho em relação à execução nativa.
